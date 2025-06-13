@@ -93,7 +93,7 @@ INSTALLED_APPS = [
     # Local apps
     # 'users',
     'core',
-    # 'doctors',
+     'doctors',
     # 'manufacturers',
     # 'delivery',
     # 'appointments',
