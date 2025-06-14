@@ -1,12 +1,10 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { User, Award, GraduationCap, Plus } from 'lucide-react';
+import { User, GraduationCap } from 'lucide-react';
 
 interface DoctorProfileTabProps {
   doctorProfile: any;
@@ -14,9 +12,7 @@ interface DoctorProfileTabProps {
   profileForm: any;
   onEditProfile: () => void;
   onSaveProfile: () => void;
-  onProfileChange: (field: string, value: string | string[]) => void;
-  onAddExpertise: () => void;
-  onRemoveExpertise: (index: number) => void;
+  onProfileChange: (field: string, value: string) => void;
   onCancelEdit: () => void;
 }
 
@@ -27,8 +23,6 @@ const DoctorProfileTab = ({
   onEditProfile,
   onSaveProfile,
   onProfileChange,
-  onAddExpertise,
-  onRemoveExpertise,
   onCancelEdit
 }: DoctorProfileTabProps) => {
   return (
@@ -62,20 +56,32 @@ const DoctorProfileTab = ({
                   onChange={(e) => onProfileChange('specialization', e.target.value)}
                 />
               </div>
-              <div>
-                <Label htmlFor="experience">Years of Experience</Label>
+               <div>
+                <Label htmlFor="experience_years">Years of Experience</Label>
                 <Input
-                  id="experience"
-                  value={profileForm.experience}
-                  onChange={(e) => onProfileChange('experience', e.target.value)}
-                />
-              </div>
+                   id="experience_years"
+                   type="number"
+                   value={profileForm.experience_years}
+                   onChange={(e) => onProfileChange('experience_years', e.target.value)}
+
+  />
+</div>
+
               <div>
                 <Label htmlFor="qualifications">Qualifications</Label>
                 <Input
                   id="qualifications"
                   value={profileForm.qualifications}
                   onChange={(e) => onProfileChange('qualifications', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="availability">Availability</Label>
+                <Input
+                  id="availability"
+                  value={profileForm.availability}
+                  onChange={(e) => onProfileChange('availability', e.target.value)}
+                  placeholder="e.g. Mon-Fri"
                 />
               </div>
             </div>
@@ -88,24 +94,6 @@ const DoctorProfileTab = ({
                 onChange={(e) => onProfileChange('biography', e.target.value)}
                 rows={4}
               />
-            </div>
-
-            <div>
-              <div className="flex justify-between items-center mb-3">
-                <Label>Areas of Expertise</Label>
-                <Button type="button" variant="outline" size="sm" onClick={onAddExpertise}>
-                  <Plus className="h-4 w-4 mr-1" />
-                  Add Expertise
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {profileForm.expertise.map((skill: string, index: number) => (
-                  <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                    {skill}
-                    <button onClick={() => onRemoveExpertise(index)} className="ml-1 text-xs">×</button>
-                  </Badge>
-                ))}
-              </div>
             </div>
 
             <div className="flex gap-2">
@@ -124,20 +112,9 @@ const DoctorProfileTab = ({
                 <div className="space-y-2">
                   <p><strong>Name:</strong> {doctorProfile.name}</p>
                   <p><strong>Specialization:</strong> {doctorProfile.specialization}</p>
-                  <p><strong>Experience:</strong> {doctorProfile.experience}</p>
+                  <p><strong>Experience:</strong> {doctorProfile.experience_years}</p>
                   <p><strong>Qualifications:</strong> {doctorProfile.qualifications}</p>
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="font-semibold mb-2 flex items-center gap-2">
-                  <Award className="h-4 w-4" />
-                  Areas of Expertise
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {doctorProfile.expertise.map((skill: string, index: number) => (
-                    <Badge key={index} variant="secondary">{skill}</Badge>
-                  ))}
+                  <p><strong>Availability:</strong> {doctorProfile.availability}</p>
                 </div>
               </div>
             </div>

@@ -1,21 +1,56 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
+interface EyePrescription {
+  sphere?: string | number;
+  cylinder?: string | number;
+  axis?: string | number;
+}
+
+interface Prescription {
+  id: string;
+  patientName: string;
+  date?: string;
+  dateIssued?: string;
+  doctorName?: string;
+  rightEye?: EyePrescription;
+  leftEye?: EyePrescription;
+  pupillaryDistance?: number | string;
+  details?: string;
+}
+
+interface Appointment {
+  id: string;
+  patientName: string;
+  date: string;
+  time: string;
+  type: string;
+}
+
+interface DoctorProfile {
+  experience?: number | string;
+  expertise?: string[];
+}
+
 interface DoctorOverviewProps {
-  appointments: any[];
-  prescriptions: any[];
-  doctorProfile: any;
+  appointments: Appointment[];
+  prescriptions: Prescription[];
+  doctorProfile: DoctorProfile;
   onViewAppointment: (id: string) => void;
 }
 
-const DoctorOverview = ({ appointments, prescriptions, doctorProfile, onViewAppointment }: DoctorOverviewProps) => {
-  const [selectedPrescription, setSelectedPrescription] = useState<any>(null);
+const DoctorOverview = ({
+  appointments,
+  prescriptions,
+  doctorProfile,
+  onViewAppointment,
+}: DoctorOverviewProps) => {
+  const [selectedPrescription, setSelectedPrescription] = useState<Prescription | null>(null);
   const [prescriptionDialogOpen, setPrescriptionDialogOpen] = useState(false);
 
-  const handleViewPrescriptionDetails = (prescription: any) => {
+  const handleViewPrescriptionDetails = (prescription: Prescription) => {
     setSelectedPrescription(prescription);
     setPrescriptionDialogOpen(true);
   };
@@ -49,7 +84,7 @@ const DoctorOverview = ({ appointments, prescriptions, doctorProfile, onViewAppo
             <CardTitle>Experience</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{doctorProfile.experience}</div>
+            <div className="text-2xl font-bold">{doctorProfile.experience ?? '-'}</div>
             <p className="text-sm text-muted-foreground">Years in practice</p>
           </CardContent>
         </Card>
@@ -59,7 +94,7 @@ const DoctorOverview = ({ appointments, prescriptions, doctorProfile, onViewAppo
             <CardTitle>Specializations</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{doctorProfile.expertise.length}</div>
+            <div className="text-2xl font-bold">{doctorProfile.expertise?.length ?? 0}</div>
             <p className="text-sm text-muted-foreground">Areas of expertise</p>
           </CardContent>
         </Card>
@@ -84,9 +119,7 @@ const DoctorOverview = ({ appointments, prescriptions, doctorProfile, onViewAppo
                         <p className="text-muted-foreground">
                           {appointment.date} at {appointment.time}
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                          Type: {appointment.type}
-                        </p>
+                        <p className="text-sm text-muted-foreground">Type: {appointment.type}</p>
                       </div>
                       <Button variant="outline" size="sm" onClick={() => onViewAppointment(appointment.id)}>
                         View Details
@@ -114,17 +147,11 @@ const DoctorOverview = ({ appointments, prescriptions, doctorProfile, onViewAppo
                       <div>
                         <h3 className="text-lg font-semibold">{prescription.patientName}</h3>
                         <p className="text-muted-foreground">
-                          Issued on {prescription.date || prescription.dateIssued}
+                          Issued on {prescription.date ?? prescription.dateIssued ?? '-'}
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                          ID: {prescription.id}
-                        </p>
+                        <p className="text-sm text-muted-foreground">ID: {prescription.id}</p>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleViewPrescriptionDetails(prescription)}
-                      >
+                      <Button variant="outline" size="sm" onClick={() => handleViewPrescriptionDetails(prescription)}>
                         View Details
                       </Button>
                     </div>
@@ -155,63 +182,63 @@ const DoctorOverview = ({ appointments, prescriptions, doctorProfile, onViewAppo
                 </div>
                 <div>
                   <h3 className="font-medium">Date Issued</h3>
-                  <p>{selectedPrescription.date || selectedPrescription.dateIssued}</p>
+                  <p>{selectedPrescription.date ?? selectedPrescription.dateIssued ?? '-'}</p>
                 </div>
                 <div>
                   <h3 className="font-medium">Doctor</h3>
-                  <p>{selectedPrescription.doctorName}</p>
+                  <p>{selectedPrescription.doctorName ?? '-'}</p>
                 </div>
               </div>
-              
+
               <div className="border rounded-md p-4 bg-muted/30">
                 <h3 className="font-medium mb-4 text-primary">Prescription Values</h3>
-                
+
                 <div className="grid grid-cols-2 gap-6">
                   <div>
                     <h4 className="text-sm font-medium mb-2">Right Eye (OD)</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Sphere (SPH):</span>
-                        <span className="font-medium">{selectedPrescription.rightEye.sphere}</span>
+                        <span className="font-medium">{selectedPrescription.rightEye?.sphere ?? '-'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Cylinder (CYL):</span>
-                        <span className="font-medium">{selectedPrescription.rightEye.cylinder}</span>
+                        <span className="font-medium">{selectedPrescription.rightEye?.cylinder ?? '-'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Axis:</span>
-                        <span className="font-medium">{selectedPrescription.rightEye.axis}</span>
+                        <span className="font-medium">{selectedPrescription.rightEye?.axis ?? '-'}</span>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div>
                     <h4 className="text-sm font-medium mb-2">Left Eye (OS)</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Sphere (SPH):</span>
-                        <span className="font-medium">{selectedPrescription.leftEye.sphere}</span>
+                        <span className="font-medium">{selectedPrescription.leftEye?.sphere ?? '-'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Cylinder (CYL):</span>
-                        <span className="font-medium">{selectedPrescription.leftEye.cylinder}</span>
+                        <span className="font-medium">{selectedPrescription.leftEye?.cylinder ?? '-'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Axis:</span>
-                        <span className="font-medium">{selectedPrescription.leftEye.axis}</span>
+                        <span className="font-medium">{selectedPrescription.leftEye?.axis ?? '-'}</span>
                       </div>
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="mt-4 pt-4 border-t">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Pupillary Distance (PD):</span>
-                    <span className="font-medium">{selectedPrescription.pupillaryDistance}mm</span>
+                    <span className="font-medium">{selectedPrescription.pupillaryDistance ?? '-'}mm</span>
                   </div>
                 </div>
               </div>
-              
+
               {selectedPrescription.details && (
                 <div className="bg-muted/50 p-3 rounded-md">
                   <h4 className="font-medium mb-2">Additional Notes</h4>
