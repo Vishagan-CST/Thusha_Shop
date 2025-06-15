@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Confirmation</title>
+</head>
+<body>
+    <h2>Your Appointment is Confirmed!</h2>
+    <p>Dear {{ patient_name }},</p>
+    
+    <p>Your appointment with {{ doctor_name }} ({{ specialty }}) has been scheduled for:</p>
+    
+    <p><strong>{{ date }} at {{ time }}</strong></p>
+    
+    <p>Reason for visit: {{ reason }}</p>
+    
+    <h3>Clinic Information</h3>
+    <p>{{ clinic_name }}<br>
+    {{ clinic_address }}<br>
+    Phone: {{ clinic_phone }}</p>
+    
+    <p>Please arrive 10 minutes before your scheduled time.</p>
+    
+    <p>Best regards,<br>
+    The {{ clinic_name }} Team</p>
+</body>
+</html>
