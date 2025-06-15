@@ -16,8 +16,10 @@ from django.contrib.auth import authenticate
 from .serializers import ProfileSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
-
-
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import check_password
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.throttling import AnonRateThrottle
 User = get_user_model()
 
 class RegisterView(APIView):
@@ -143,6 +145,7 @@ class ResendOTPView(APIView):
 
 # users/views.py
 class LoginView(APIView):
+    throttle_classes = [AnonRateThrottle]
     def post(self, request):
         email = request.data.get("email")
         password = request.data.get("password")
@@ -163,16 +166,17 @@ class LoginView(APIView):
 
         refresh = RefreshToken.for_user(user)
         update_last_login(None, user)
+        user_data = {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "role": user.role
+        }
 
         return Response({
             "access": str(refresh.access_token),
             "refresh": str(refresh),
-            "user": {
-                "id": user.id,
-                "name": user.name,
-                "email": user.email,
-                "role": user.role
-            }
+            "user": user_data
         })
 
 # core/views.py
@@ -241,3 +245,68 @@ class LogoutView(APIView):
                 {"detail": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+class ChangePasswordView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        current_password = request.data.get('currentPassword')
+        new_password = request.data.get('newPassword')
+        
+        # Validate required fields
+        if not current_password or not new_password:
+            return Response(
+                {"message": "Both current and new password are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Verify current password
+        if not check_password(current_password, request.user.password):
+            return Response(
+                {"message": "Current password is incorrect"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Validate new password strength
+        if len(new_password) < 6:
+            return Response(
+                {"message": "New password must be at least 8 characters"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if new_password == current_password:
+            return Response(
+                {"message": "New password must be different from current password"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Update password
+        request.user.set_password(new_password)
+        request.user.save()
+        
+        # Maintain session for logged in users
+        update_session_auth_hash(request, request.user)
+        
+        return Response(
+            {"message": "Password updated successfully"},
+            status=status.HTTP_200_OK
+        )        
+
+
+from rest_framework.decorators import api_view, authentication_classes
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+def verify_token(request):
+    if not request.user.is_authenticated:
+        return Response({'valid': False}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    return Response({
+        'valid': True,
+        'user': {
+            'id': request.user.id,
+            'email': request.user.email,
+            'name': request.user.name,
+            'role': request.user.role
+        }
+    })

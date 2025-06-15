@@ -11,12 +11,12 @@ urlpatterns = [
 
     # User roles
     # path('api/users/', include('users.urls')),
-#     path('api/doctors/', include('doctors.urls')),
+     path('api/doctors/', include('doctors.urls')),
 #     path('api/manufacturers/', include('manufacturers.urls')),
 #     path('api/delivery/', include('delivery.urls')),
 
 #     # Functional modules
-#     path('api/appointments/', include('appointments.urls')),
+     path('api/appointments/', include('appointments.urls')),
 #     path('api/prescriptions/', include('prescriptions.urls')),
 #     path('api/products/', include('products.urls')),
 #     path('api/orders/', include('orders.urls')),

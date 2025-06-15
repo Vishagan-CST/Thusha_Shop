@@ -25,8 +25,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'ainkaran48@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'zvpl mhrw lmtz anwx')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 AUTH_USER_MODEL = 'core.User'
@@ -73,6 +73,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
         },
+          'DIRS': [os.path.join(BASE_DIR, 'templates')],
     },
 ]
 # Application definition
@@ -90,13 +91,14 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'django_filters',
     # Local apps
     # 'users',
     'core',
-    # 'doctors',
+    'doctors',
     # 'manufacturers',
     # 'delivery',
-    # 'appointments',
+    'appointments',
     # 'prescriptions',
     # 'products',
     # 'orders',
@@ -140,13 +142,16 @@ MEDIA_ROOT = BASE_DIR / 'media'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+      ),
+      'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend'
+      ),
 }
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-     'ROTATE_REFRESH_TOKENS': False,  # Add this
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+     'ROTATE_REFRESH_TOKENS': True,  # Add this
     'BLACKLIST_AFTER_ROTATION': True,  # Add this
      'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id',
