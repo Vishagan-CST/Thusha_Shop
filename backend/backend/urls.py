@@ -17,7 +17,7 @@ urlpatterns = [
 
 #     # Functional modules
      path('api/appointments/', include('appointments.urls')),
-#     path('api/prescriptions/', include('prescriptions.urls')),
+     path('api/prescriptions/', include('prescriptions.urls')),
 #     path('api/products/', include('products.urls')),
 #     path('api/orders/', include('orders.urls')),
 #     path('api/reviews/', include('reviews.urls')),
