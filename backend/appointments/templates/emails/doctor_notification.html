@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Appointment Notification</title>
+</head>
+<body>
+    <h2>New Appointment Scheduled</h2>
+    <p>Dear Dr. {{ doctor_name }},</p>
+    
+    <p>You have a new appointment with:</p>
+    
+    <p><strong>Patient:</strong> {{ patient_name }}<br>
+    <strong>Date:</strong> {{ date }} at {{ time }}<br>
+    <strong>Reason:</strong> {{ reason }}</p>
+    
+    <h3>Patient Contact Information</h3>
+    <p>Email: {{ patient_email }}<br>
+    Phone: {{ patient_phone }}</p>
+    
+    <p>Please review this appointment in your schedule.</p>
+</body>
+</html>
