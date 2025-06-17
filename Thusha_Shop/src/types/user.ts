@@ -33,38 +33,23 @@ export interface User {
 }
 
 
-export interface Prescription {
-  id: string;
-  rightEye: {
-    sphere: number;
-    cylinder: number;
-    axis: number;
-  };
-  leftEye: {
-    sphere: number;
-    cylinder: number;
-    axis: number;
-  };
-  pupillaryDistance: number;
-  doctorName: string;
-  dateIssued: string;
-  expiryDate: string;
-  notes?: string;
-  isActive?: boolean;
-  patientId?: string;
-  patientName?: string;
-  date?: string;
-  doctor?: string;
-  sphereRight?: string;
-  sphereLeft?: string;
-  cylinderRight?: string;
-  cylinderLeft?: string;
-  axisRight?: string;
-  axisLeft?: string;
-  pdRight?: string;
-  pdLeft?: string;
-  status?: string;
+ export interface Prescription {
+  id: number;
+  prescription_id: string;
+  doctor_name: string;
+  patient_name: string;
+  date_issued: string;
+  expiry_date: string;
+  right_sphere: string | null;
+  right_cylinder: string | null;
+  right_axis: string | null;
+  left_sphere: string | null;
+  left_cylinder: string | null;
+  left_axis: string | null;
+  pupillary_distance: number | null;
+  status: string;  // add this line for status
 }
+
 
 export interface UserPreferences {
   frameStyle?: string;
