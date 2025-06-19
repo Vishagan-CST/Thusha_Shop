@@ -7,9 +7,14 @@ import PrescriptionDisplay from '@/components/PrescriptionDisplay';
 interface DoctorPrescriptionsTabProps {
   prescriptions: any[];
   onCreatePrescription: () => void;
+  onRefreshPrescriptions?: () => void; // add this
 }
 
-const DoctorPrescriptionsTab = ({ prescriptions, onCreatePrescription }: DoctorPrescriptionsTabProps) => {
+const DoctorPrescriptionsTab = ({
+  prescriptions,
+  onCreatePrescription,
+  onRefreshPrescriptions,
+}: DoctorPrescriptionsTabProps) => {
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between items-center">
@@ -26,7 +31,11 @@ const DoctorPrescriptionsTab = ({ prescriptions, onCreatePrescription }: DoctorP
       </CardHeader>
 
       <CardContent>
-        <PrescriptionDisplay prescriptions={prescriptions} title="Issued Prescriptions" />
+        <PrescriptionDisplay
+          prescriptions={prescriptions}
+          title="Issued Prescriptions"
+          onRefreshPrescriptions={onRefreshPrescriptions} // pass it down
+        />
       </CardContent>
     </Card>
   );
