@@ -8,13 +8,18 @@ class DoctorProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = DoctorProfile
         fields = [
-            'name', 'email',  # name is writable, email read-only
+            'name', 'email', # name is writable, email read-only
+             id, 
             'specialization',
             'experience_years',
             'qualifications',
             'biography',
             'availability',
         ]
+        
+    depth = 1  
+    def get_name(self, obj):
+        return obj.user.name 
 
     def update(self, instance, validated_data):
         # Update User.name

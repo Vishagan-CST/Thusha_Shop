@@ -1,37 +1,39 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-
-interface EyePrescription {
-  sphere?: string | number;
-  cylinder?: string | number;
-  axis?: string | number;
-}
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 
 interface Prescription {
   id: string;
-  patientName: string;
+  patient_name: string;
   date?: string;
-  dateIssued?: string;
-  doctorName?: string;
-  rightEye?: EyePrescription;
-  leftEye?: EyePrescription;
-  pupillaryDistance?: number | string;
+  date_issued?: string;
+  doctor_name?: string;
+  right_sphere?: string;
+  right_cylinder?: string;
+  right_axis?: string;
+  left_sphere?: string;
+  left_cylinder?: string;
+  left_axis?: string;
+  pupillary_distance?: number | string;
   details?: string;
 }
 
 interface Appointment {
   id: string;
-  patientName: string;
+  patient_name: string;
   date: string;
   time: string;
+  patient_email: string;
+  reason: string;
   type: string;
+  status: string;
 }
 
 interface DoctorProfile {
-  experience?: number | string;
-  expertise?: string[];
+  experience_years?: number | string;
+  specialization?: string[] | string;
+  qualifications?: string;
 }
 
 interface DoctorOverviewProps {
@@ -39,6 +41,9 @@ interface DoctorOverviewProps {
   prescriptions: Prescription[];
   doctorProfile: DoctorProfile;
   onViewAppointment: (id: string) => void;
+  selectedAppointment: Appointment | null;
+  showAppointmentDialog: boolean;
+  setShowAppointmentDialog: (open: boolean) => void;
 }
 
 const DoctorOverview = ({
@@ -46,6 +51,9 @@ const DoctorOverview = ({
   prescriptions,
   doctorProfile,
   onViewAppointment,
+  selectedAppointment,
+  showAppointmentDialog,
+  setShowAppointmentDialog,
 }: DoctorOverviewProps) => {
   const [selectedPrescription, setSelectedPrescription] = useState<Prescription | null>(null);
   const [prescriptionDialogOpen, setPrescriptionDialogOpen] = useState(false);
@@ -54,6 +62,19 @@ const DoctorOverview = ({
     setSelectedPrescription(prescription);
     setPrescriptionDialogOpen(true);
   };
+
+  // Map "confirmed" to "Scheduled"
+  const getDisplayStatus = (status: string) =>
+    status.toLowerCase() === 'confirmed' ? 'Scheduled' : status.charAt(0).toUpperCase() + status.slice(1);
+
+  
+const getStatusColor = (status: string) => {
+  const lower = status.toLowerCase();
+  if (lower === 'confirmed') return 'text-blue-600 font-semibold';
+  if (lower === 'completed') return 'text-green-600 font-semibold';
+  if (lower === 'cancelled') return 'text-red-600 font-semibold';
+  return 'text-gray-600';
+};
 
   return (
     <>
@@ -84,7 +105,7 @@ const DoctorOverview = ({
             <CardTitle>Experience</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{doctorProfile.experience ?? '-'}</div>
+            <div className="text-2xl font-bold">{doctorProfile.experience_years ?? '-'}</div>
             <p className="text-sm text-muted-foreground">Years in practice</p>
           </CardContent>
         </Card>
@@ -94,8 +115,14 @@ const DoctorOverview = ({
             <CardTitle>Specializations</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{doctorProfile.expertise?.length ?? 0}</div>
-            <p className="text-sm text-muted-foreground">Areas of expertise</p>
+            <div className="text-2xl font-bold">
+              {Array.isArray(doctorProfile.specialization)
+                ? doctorProfile.specialization.join(', ')
+                : typeof doctorProfile.specialization === 'string' && doctorProfile.specialization.trim() !== ''
+                ? doctorProfile.specialization
+                : 'None'}
+            </div>
+            <p className="text-sm text-muted-foreground">Specialization Areas</p>
           </CardContent>
         </Card>
       </div>
@@ -115,11 +142,13 @@ const DoctorOverview = ({
                   <li key={appointment.id} className="border rounded-md p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="text-lg font-semibold">{appointment.patientName}</h3>
+                        <h3 className="text-lg font-semibold">{appointment.patient_name}</h3>
                         <p className="text-muted-foreground">
                           {appointment.date} at {appointment.time}
                         </p>
-                        <p className="text-sm text-muted-foreground">Type: {appointment.type}</p>
+                        <p className={`text-sm ${getStatusColor(appointment.status)}`}>
+                          Status: {getDisplayStatus(appointment.status)}
+                        </p>
                       </div>
                       <Button variant="outline" size="sm" onClick={() => onViewAppointment(appointment.id)}>
                         View Details
@@ -145,13 +174,22 @@ const DoctorOverview = ({
                   <li key={prescription.id} className="border rounded-md p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="text-lg font-semibold">{prescription.patientName}</h3>
+                        <h3 className="text-lg font-semibold">{prescription.patient_name}</h3>
                         <p className="text-muted-foreground">
-                          Issued on {prescription.date ?? prescription.dateIssued ?? '-'}
+                          Issued on{' '}
+                          {prescription.date_issued
+                            ? new Date(prescription.date_issued).toISOString().split('T')[0]
+                            : prescription.date
+                            ? new Date(prescription.date).toISOString().split('T')[0]
+                            : '-'}
                         </p>
                         <p className="text-sm text-muted-foreground">ID: {prescription.id}</p>
                       </div>
-                      <Button variant="outline" size="sm" onClick={() => handleViewPrescriptionDetails(prescription)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleViewPrescriptionDetails(prescription)}
+                      >
                         View Details
                       </Button>
                     </div>
@@ -178,15 +216,21 @@ const DoctorOverview = ({
                 </div>
                 <div>
                   <h3 className="font-medium">Patient Name</h3>
-                  <p>{selectedPrescription.patientName}</p>
+                  <p>{selectedPrescription.patient_name}</p>
                 </div>
                 <div>
                   <h3 className="font-medium">Date Issued</h3>
-                  <p>{selectedPrescription.date ?? selectedPrescription.dateIssued ?? '-'}</p>
+                  <p>
+                    {selectedPrescription.date_issued
+                      ? new Date(selectedPrescription.date_issued).toISOString().split('T')[0]
+                      : selectedPrescription.date
+                      ? new Date(selectedPrescription.date).toISOString().split('T')[0]
+                      : '-'}
+                  </p>
                 </div>
                 <div>
                   <h3 className="font-medium">Doctor</h3>
-                  <p>{selectedPrescription.doctorName ?? '-'}</p>
+                  <p>{selectedPrescription.doctor_name ?? '-'}</p>
                 </div>
               </div>
 
@@ -199,15 +243,15 @@ const DoctorOverview = ({
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Sphere (SPH):</span>
-                        <span className="font-medium">{selectedPrescription.rightEye?.sphere ?? '-'}</span>
+                        <span className="font-medium">{selectedPrescription.right_sphere ?? '-'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Cylinder (CYL):</span>
-                        <span className="font-medium">{selectedPrescription.rightEye?.cylinder ?? '-'}</span>
+                        <span className="font-medium">{selectedPrescription.right_cylinder ?? '-'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Axis:</span>
-                        <span className="font-medium">{selectedPrescription.rightEye?.axis ?? '-'}</span>
+                        <span className="font-medium">{selectedPrescription.right_axis ?? '-'}</span>
                       </div>
                     </div>
                   </div>
@@ -217,15 +261,15 @@ const DoctorOverview = ({
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Sphere (SPH):</span>
-                        <span className="font-medium">{selectedPrescription.leftEye?.sphere ?? '-'}</span>
+                        <span className="font-medium">{selectedPrescription.left_sphere ?? '-'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Cylinder (CYL):</span>
-                        <span className="font-medium">{selectedPrescription.leftEye?.cylinder ?? '-'}</span>
+                        <span className="font-medium">{selectedPrescription.left_cylinder ?? '-'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Axis:</span>
-                        <span className="font-medium">{selectedPrescription.leftEye?.axis ?? '-'}</span>
+                        <span className="font-medium">{selectedPrescription.left_axis ?? '-'}</span>
                       </div>
                     </div>
                   </div>
@@ -234,7 +278,7 @@ const DoctorOverview = ({
                 <div className="mt-4 pt-4 border-t">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Pupillary Distance (PD):</span>
-                    <span className="font-medium">{selectedPrescription.pupillaryDistance ?? '-'}mm</span>
+                    <span className="font-medium">{selectedPrescription.pupillary_distance ?? '-'}mm</span>
                   </div>
                 </div>
               </div>
@@ -247,6 +291,43 @@ const DoctorOverview = ({
               )}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Appointment Details Dialog */}
+      <Dialog open={showAppointmentDialog} onOpenChange={setShowAppointmentDialog}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <DialogTitle className="text-center bg-yellow-200 rounded-xl px-4 py-2">
+              Appointment Details
+            </DialogTitle>
+
+            {selectedAppointment ? (
+              <div className="space-y-2 mt-4">
+                <p><strong>Appointment ID:</strong> {selectedAppointment.id}</p>
+                <p><strong>Patient Name:</strong> {selectedAppointment.patient_name}</p>
+                <p><strong>Patient Email:</strong> {selectedAppointment.patient_email}</p>
+                <p><strong>Date:</strong> {selectedAppointment.date}</p>
+                <p><strong>Time:</strong> {selectedAppointment.time}</p>
+               <p>
+  <strong>Status:</strong>{' '}
+  <span className={getStatusColor(selectedAppointment.status)}>
+    {getDisplayStatus(selectedAppointment.status)}
+  </span>
+</p>
+
+                <p><strong>Reason:</strong> {selectedAppointment.reason}</p>
+              </div>
+            ) : (
+              <p>No appointment selected.</p>
+            )}
+
+            <DialogClose asChild>
+              <Button variant="ghost" size="sm" className="mt-4">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogHeader>
         </DialogContent>
       </Dialog>
     </>

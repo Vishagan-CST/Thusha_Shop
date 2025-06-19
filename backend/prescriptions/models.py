@@ -1,7 +1,4 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.utils import timezone
 from core.models import User
 
@@ -27,6 +24,11 @@ class Prescription(models.Model):
         limit_choices_to={'role': 'customer'}
     )
 
+    # This field is optional and redundant since email is in User model
+    # It's useful only if you want to keep email as historical data even if user deletes account
+    patient_email = models.EmailField(blank=True, null=True)
+
+    # Automatically derived from patient field
     patient_name = models.CharField(max_length=255, null=True, blank=True)
 
     right_sphere = models.FloatField(default=0.0)
@@ -53,8 +55,10 @@ class Prescription(models.Model):
         if not self.expiry_date:
             self.expiry_date = timezone.now() + timezone.timedelta(days=365)
 
-        if not self.patient_name and self.patient:
+        # Automatically copy from User model
+        if self.patient:
             self.patient_name = self.patient.name
+            self.patient_email = self.patient.email
 
         super().save(*args, **kwargs)
 
