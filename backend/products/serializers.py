@@ -116,3 +116,29 @@ class ProductSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+    
+    
+class AccessorySerializer(serializers.ModelSerializer):
+    category = CategorySerializer(read_only=True)
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        source='category',
+        write_only=True
+    )
+    # manufacturer = serializers.PrimaryKeyRelatedField(
+    #     queryset=User.objects.filter(role='manufacturer')
+    # )
+    
+    class Meta:
+        model = Accessory
+        fields = [
+            'id', 'name', 'description', 'category', 'category_id',
+            'price', 'stock', 'image', 'weight', 'manufacturer',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['manufacturer', 'created_at', 'updated_at']
+
+    def validate_stock(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Stock cannot be negative.")
+        return value

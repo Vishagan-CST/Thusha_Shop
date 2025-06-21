@@ -64,3 +64,31 @@ class ProductViewSet(viewsets.ModelViewSet):
             return Response({"message": "Stock updated successfully."})
         except ValueError:
             return Response({"error": "Invalid stock value."}, status=status.HTTP_400_BAD_REQUEST)
+        
+class AccessoryViewSet(viewsets.ModelViewSet):
+    
+    queryset = Accessory.objects.all().select_related('category', 'manufacturer').order_by('-created_at')
+    serializer_class = AccessorySerializer
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
+    filter_backends = [SearchFilter]
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        if self.request.user.role not in ['manufacturer', 'admin']:
+            raise PermissionDenied("Only manufacturers can create accessories.")
+        serializer.save(manufacturer=self.request.user)
+
+    @action(detail=True, methods=["patch"], url_path="update-stock", parser_classes=[JSONParser])
+    def update_stock(self, request, pk=None):
+        accessory = self.get_object()
+        new_stock = request.data.get("stock")
+
+        if new_stock is None:
+            return Response({"error": "Stock value is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            accessory.stock = int(new_stock)
+            accessory.save()
+            return Response({"message": "Stock updated successfully."})
+        except ValueError:
+            return Response({"error": "Invalid stock value."}, status=status.HTTP_400_BAD_REQUEST)        
