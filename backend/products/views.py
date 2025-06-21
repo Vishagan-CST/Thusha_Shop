@@ -22,3 +22,45 @@ class CategoryView(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by('-created_at')
     serializer_class = CategorySerializer
     filter_backends = [SearchFilter]
+
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all().select_related('category', 'frame_type').order_by('-created_at')
+    serializer_class = ProductSerializer
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
+    filter_backends = [SearchFilter]
+
+    def create(self, request, *args, **kwargs):
+        mutable_data = request.data.copy()
+        mutable_data.setlist('images', request.FILES.getlist('images'))
+
+        serializer = self.get_serializer(data=mutable_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return super().update(request, *args, **kwargs)
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
+    @action(detail=True, methods=["patch"], url_path="update-stock", parser_classes=[JSONParser])
+    def update_stock(self, request, pk=None):
+        product = self.get_object()
+        new_stock = request.data.get("stock")
+
+        if new_stock is None:
+            return Response({"error": "Stock value is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            product.stock = int(new_stock)
+            product.save()
+            return Response({"message": "Stock updated successfully."})
+        except ValueError:
+            return Response({"error": "Invalid stock value."}, status=status.HTTP_400_BAD_REQUEST)
