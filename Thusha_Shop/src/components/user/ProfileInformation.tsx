@@ -20,7 +20,8 @@ interface ProfileFormData {
 const ProfileInformation = () => {
   const { user, updateProfile, fetchProfile } = useUser();
   const { toast } = useToast();
-  
+  const [isLoading, setIsLoading] = useState(true); 
+
   const [formData, setFormData] = useState<ProfileFormData>({
     name: "",
     phone_number: "",
@@ -33,16 +34,36 @@ const ProfileInformation = () => {
   });
 
   useEffect(() => {
-    if (user) {
+    const loadProfileData = async () => {
+      try {
+        if (!user?.profile) {
+          await fetchProfile();
+        }
+      } catch (error) {
+        toast({
+          title: "Failed to load profile",
+          description: error instanceof Error ? error.message : "An error occurred",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProfileData();
+  }, [fetchProfile, toast, user]);
+
+  useEffect(() => {
+    if (user && user.profile) {
       setFormData({
         name: user.name || "",
-        phone_number: user?.profile?.phone_number || "",
-        address_line1: user?.profile?.address_line1 || "",
-        address_line2: user?.profile?.address_line2 || "",
-        city: user?.profile?.city || "",
-        state: user?.profile?.state || "",
-        zip_code: user?.profile?.zip_code || "",
-        country: user?.profile?.country || "Sri Lanka",
+        phone_number: user.profile.phone_number || "",
+        address_line1: user.profile.address_line1 || "",
+        address_line2: user.profile.address_line2 || "",
+        city: user.profile.city || "",
+        state: user.profile.state || "",
+        zip_code: user.profile.zip_code || "",
+        country: user.profile.country || "Sri Lanka",
       });
     }
   }, [user]);
@@ -72,12 +93,12 @@ const ProfileInformation = () => {
           state: formData.state,
           zip_code: formData.zip_code,
           country: formData.country,
-        }
+        },
       });
-      
+
       // Refresh profile data after update
       await fetchProfile();
-      
+
       toast({
         title: "Profile updated",
         description: "Your profile information has been updated successfully.",
@@ -92,6 +113,15 @@ const ProfileInformation = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-10">
+        <span className="text-lg font-medium">Loading profile...</span>
+      </div>
+    );
+  }
+
 
   return (
     <>
