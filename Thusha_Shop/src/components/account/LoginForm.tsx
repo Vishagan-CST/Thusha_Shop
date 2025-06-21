@@ -37,35 +37,34 @@ const LoginForm = ({ onToggleAuthMode }: LoginFormProps) => {
   setIsSubmitting(true);
 
   try {
-    await login(formData.email, formData.password);
+   const loggedInUser = await login(formData.email, formData.password);
     
     // Now check the user from context instead of the login return value
-    if (!user || !user.role) {
-      toast({
-        title: "Login Error",
-        description: "User data not available",
-        variant: "destructive",
-      });
-      return;
-    }
+    if (!loggedInUser || !loggedInUser.role) {
+  toast({
+    title: "Login Error",
+    description: "User role not found",
+    variant: "destructive",
+  });
+  return;
+}
 
-    switch (user.role) {
-      case "admin":
-        navigate("/admin-dashboard");
-        break;
-      case "doctor":
-        navigate("/doctor-dashboard");
-        break;
-      case "manufacturer":
-        navigate("/manufacturer-dashboard");
-        break;
-      case "delivery":
-        navigate("/delivery-dashboard");
-        break;
-      default:
-        navigate("/user-dashboard");
-    }
-
+switch (loggedInUser.role) {
+  case "admin":
+    navigate("/admin-dashboard");
+    break;
+  case "doctor":
+    navigate("/doctor-dashboard");
+    break;
+  case "manufacturer":
+    navigate("/manufacturer-dashboard");
+    break;
+  case "delivery":
+    navigate("/delivery-dashboard");
+    break;
+  default:
+    navigate("/account");
+}
   } catch (error) {
     toast({
       title: "Login Error",

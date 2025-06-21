@@ -43,14 +43,15 @@ apiClient.interceptors.response.use(
         const newAccessToken = response.data.access;
         localStorage.setItem('access_token', newAccessToken);
         apiClient.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
-        
+        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+
         return apiClient(originalRequest);
       } catch (refreshError) {
         console.error("Refresh token failed:", refreshError);
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('user');
-        window.location.href = '/account?login=true';
+
         return Promise.reject(refreshError);
       }
     }
@@ -67,6 +68,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   // Load user from localStorage on mount
  useEffect(() => {
+  
   const initializeAuth = async () => {
     const accessToken = localStorage.getItem('access_token');
     const savedUser = localStorage.getItem('user');
@@ -91,7 +93,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         // Token verification failed - clear invalid auth data
         console.error("Token verification failed:", error);
-        performCleanup(false); // silent cleanup
+        performCleanup(); // silent cleanup
       }
     } else {
       // No valid auth data found
@@ -148,18 +150,8 @@ const login = async (email: string, password: string): Promise<User> => {
     setUser(user);
     setIsAuthenticated(true);
 
-    // Handle fetchProfile errors
-    try {
-      await fetchProfile();
-    } catch (error) {
-      console.error("Failed to fetch profile:", error);
-      toast({
-        title: "Profile Load Failed",
-        description: "User data may be incomplete.",
-        variant: "destructive",
-      });
-    }
-
+  
+  
       toast({
         title: "Login Successful",
         description: `Welcome back, ${user.name}!`,
@@ -183,16 +175,15 @@ const login = async (email: string, password: string): Promise<User> => {
 
   // Logout function
 const logout = async (showToast = true) => {
-  const refreshToken = localStorage.getItem('refresh_token');
-  
+  const refreshToken = localStorage.getItem("refresh_token");
+
   try {
-    // Only attempt API logout if we have a refresh token
     if (refreshToken) {
-      await authClient.post("/api/core/logout/", { 
-        refresh: refreshToken 
-      }, {
-        timeout: 5000 // Add timeout to prevent hanging
-      });
+      await authClient.post(
+        "/api/core/logout/",
+        { refresh: refreshToken },
+        { timeout: 5000 }
+      );
     }
 
     if (showToast) {
@@ -204,7 +195,7 @@ const logout = async (showToast = true) => {
 
   } catch (error: any) {
     console.error("Logout API error:", error);
-    
+
     if (showToast) {
       toast({
         title: "Session Ended",
@@ -212,35 +203,29 @@ const logout = async (showToast = true) => {
         variant: "default",
       });
     }
-    
+
   } finally {
-    await performCleanup();
+    await performCleanup(); // no toast inside this
+    setTimeout(() => {
+      window.location.assign("/"); // give enough time for toast to show
+    }, 1500); // 1.5 seconds is usually safe
   }
 };
 
-const performCleanup = async (showToast = true) => {
-  // Clear all authentication data
-  localStorage.removeItem('access_token');
-  localStorage.removeItem('refresh_token');
-  localStorage.removeItem('user');
-  // Clear any application-specific storage
+const performCleanup = async () => {
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("user");
   sessionStorage.clear();
-  
-  // Reset React state
+
   setUser(null);
   setIsAuthenticated(false);
-  
-  // Clear axios cache if needed
-  apiClient.interceptors.request.clear();
-  if (showToast) {
-    toast({
-      title: "Logged Out",
-      description: "You have been successfully signed out",
-    });
+
+  if (apiClient.interceptors?.request?.clear) {
+    apiClient.interceptors.request.clear();
   }
-  // Redirect with full page reload to ensure complete cleanup
-  window.location.assign('/account?login=true'); // Use assign() instead of href
 };
+
   // Register function
   const register = async (name: string, email: string, password: string, role: UserRole): Promise<void> => {
     const validation = validateForm(registerSchema, {
@@ -363,6 +348,7 @@ const createInitialProfile = async () => {
       setUser(prev => ({
         ...prev,
         name: profileData.name || prev?.name,
+        created_at: profileData.created_at ,
         profile: {
           ...prev?.profile,
           phone_number: profileData.phone_number,
@@ -515,6 +501,3 @@ export function useUser() {
   return context;
 }
 
-function logout() {
-  throw new Error("Function not implemented.");
-}
