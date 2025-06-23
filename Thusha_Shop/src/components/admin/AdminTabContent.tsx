@@ -11,6 +11,7 @@ import ProductsTable from "@/components/admin/ProductsTable";
 import AppointmentsTable from "@/components/admin/AppointmentsTable";
 import CustomersTable from "@/components/admin/CustomersTable";
 import ProfileSettings from "@/components/admin/ProfileSettings";
+import ContactUsTable from "@/components/admin/ContactUsTable";
 
 // Import mock data
 import {
@@ -52,6 +53,22 @@ const AdminTabContent: React.FC<AdminTabContentProps> = ({
     updateAccessoryStock,
 
   } = useAdminDashboard();
+
+  const [contacts, setContacts] = useState<ContactMessage[]>([]);
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/messages/");
+        const data = await response.json();
+        setContacts(data);
+      } catch (error) {
+        console.error("Failed to fetch contacts:", error);
+      }
+    };
+
+    fetchContacts();
+  }, []);
 
   const handleUpdateAppointmentStatus = (
     appointmentId: string,
@@ -133,6 +150,9 @@ const AdminTabContent: React.FC<AdminTabContentProps> = ({
           customers={mockCustomers}
           onCreateStaffAccount={onCreateStaffAccount}
         />
+      </TabsContent>
+      <TabsContent value="contactus">
+        <ContactUsTable contacts={contacts} />
       </TabsContent>
 
       <TabsContent value="settings">

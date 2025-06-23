@@ -21,7 +21,10 @@ urlpatterns = [
      path('api/products/', include('products.urls')),
 #     path('api/orders/', include('orders.urls')),
 #     path('api/reviews/', include('reviews.urls')),
-#     path('api/face-shape/', include('face_shape.urls')),
+    path('api/', include('face_shape.urls')),  # fallback or shared
+    path('api/contact/', include('face_shape.urls')),
+    path('api/faceshape/', include('face_shape.urls')),
+
  ]
 
 # For media files (uploaded photos, prescriptions, etc.)

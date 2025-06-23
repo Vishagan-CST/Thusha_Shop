@@ -103,7 +103,7 @@ INSTALLED_APPS = [
     'products',
     # 'orders',
     # 'reviews',
-    # 'face_shape',
+   'face_shape',
 ]
 
 # Database
