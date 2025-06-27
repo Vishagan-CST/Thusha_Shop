@@ -1,10 +1,14 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/main
 export type UserRole = "customer" | "admin" | "doctor" | "delivery" | "manufacturer";
 
 export type FaceShape = "round" | "oval" | "square" | "heart" | "diamond" | "oblong" | "triangle" | "unknown";
 
 export type VisionProblem = "nearsighted" | "farsighted" | "astigmatism" | "presbyopia" | "none" | "unknown";
 
+<<<<<<< HEAD
 export interface Prescription {
   id: string;
   rightEye: {
@@ -50,6 +54,9 @@ export interface UserPreferences {
   visionProblem?: VisionProblem;
 }
 
+=======
+// Base profile interface for common fields
+>>>>>>> upstream/main
 export interface User {
   id: string;
   name: string;
@@ -76,6 +83,41 @@ export interface User {
   createdBy?: string;
   is_active?: boolean;
 }
+<<<<<<< HEAD
+=======
+
+
+ export interface Prescription {
+  id: number;
+  prescription_id: string;
+  doctor_name: string;
+  patient_name: string;
+  date_issued: string;
+  expiry_date: string;
+  right_sphere: string | null;
+  right_cylinder: string | null;
+  right_axis: string | null;
+  left_sphere: string | null;
+  left_cylinder: string | null;
+  left_axis: string | null;
+  pupillary_distance: number | null;
+  status: string;  // add this line for status
+}
+
+
+export interface UserPreferences {
+  frameStyle?: string;
+  preferredBrands?: string[];
+  budgetRange?: {
+    min: number;
+    max: number;
+  };
+  faceShape?: FaceShape;
+  visionProblem?: VisionProblem;
+}
+
+
+>>>>>>> upstream/main
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -94,7 +136,11 @@ export interface UserContextType {
   isAuthenticated: boolean;
   isLoggedIn: boolean;
   login: (email: string, password: string) => Promise<User>;
+<<<<<<< HEAD
   logout: () => void;
+=======
+  logout: (showToast?: boolean) => Promise<void>;
+>>>>>>> upstream/main
   register: (name: string, email: string, password: string, role?: UserRole) => Promise<void>;
   updateProfile: (profileData: Partial<User>) => Promise<void>;
   updatePassword: (currentPassword: string, newPassword: string) => Promise<void>;
@@ -102,8 +148,16 @@ export interface UserContextType {
   setUserFaceShape: (faceShape: FaceShape) => void;
   setUserVisionProblem: (visionProblem: VisionProblem) => void;
   updatePreferences: (preferences: Partial<UserPreferences>) => void;
+<<<<<<< HEAD
   fetchProfile: () => Promise<void>; //
   validateForm: (schema: any, data: any) => { success: boolean; errors?: any };
   verifyOTP: (email: string, otp: string) => Promise<boolean>;
   resendOTP: (email: string) => Promise<void>;
 }
+=======
+  fetchProfile: () => Promise<void>;
+  validateForm: (schema: any, data: any) => { success: boolean; errors?: any };
+  verifyOTP: (email: string, otp: string) => Promise<boolean>;
+  resendOTP: (email: string) => Promise<void>;
+}
+>>>>>>> upstream/main

@@ -10,6 +10,11 @@ import { useUser, FaceShape as FaceShapeType } from "@/context/UserContext";
 import { faceShapeGuide } from "@/data/products";
 import { motion } from "framer-motion";
 
+<<<<<<< HEAD
+=======
+import { detectFaceShape } from "@/api/api";
+
+>>>>>>> upstream/main
 const FaceShapePage = () => {
   const { user, setUserFaceShape } = useUser();
   const { toast } = useToast();
@@ -17,6 +22,10 @@ const FaceShapePage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/main
   const [activeTab, setActiveTab] = useState("upload");
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -45,8 +54,12 @@ const FaceShapePage = () => {
   const stopCamera = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
+<<<<<<< HEAD
       const tracks = stream.getTracks();
       tracks.forEach(track => track.stop());
+=======
+      stream.getTracks().forEach(track => track.stop());
+>>>>>>> upstream/main
       videoRef.current.srcObject = null;
       setIsCameraActive(false);
     }
@@ -57,10 +70,17 @@ const FaceShapePage = () => {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
+<<<<<<< HEAD
       
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       
+=======
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+>>>>>>> upstream/main
       if (context) {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const imageDataUrl = canvas.toDataURL("image/png");
@@ -99,8 +119,14 @@ const FaceShapePage = () => {
     }
   };
 
+<<<<<<< HEAD
   const analyzeImage = () => {
     const imageToAnalyze = capturedImage || filePreview;
+=======
+  const analyzeImage = async () => {
+    const imageToAnalyze = capturedImage || filePreview;
+
+>>>>>>> upstream/main
     if (!imageToAnalyze) {
       toast({
         title: "No Image Selected",
@@ -112,6 +138,7 @@ const FaceShapePage = () => {
 
     setAnalyzingFace(true);
 
+<<<<<<< HEAD
     // Simulate face shape analysis with a random result (in a real app, this would be an API call)
     setTimeout(() => {
       const shapes: FaceShapeType[] = ["oval", "round", "square", "heart", "diamond", "triangle", "oblong"];
@@ -120,13 +147,41 @@ const FaceShapePage = () => {
       setFaceShape(randomShape);
       setUserFaceShape(randomShape); // Save to user context
       setAnalyzingFace(false);
+=======
+    try {
+      const blob = await fetch(imageToAnalyze).then(res => res.blob());
+      const file = new File([blob], "face.png", { type: blob.type });
+
+      const result = await detectFaceShape(file); // Call backend API
+
+      // Normalize API response to lowercase to match FaceShape type
+      const normalizedShape = result.face_shape.toLowerCase() as FaceShapeType;
+
+      setFaceShape(normalizedShape);
+      setUserFaceShape(normalizedShape);
+>>>>>>> upstream/main
       setShowResults(true);
 
       toast({
         title: "Analysis Complete",
+<<<<<<< HEAD
         description: `Your face shape appears to be ${randomShape}.`,
       });
     }, 2000);
+=======
+        description: `Your face shape appears to be ${normalizedShape}.`,
+      });
+    } catch (error) {
+      console.error("Error analyzing face shape:", error);
+      toast({
+        title: "Analysis Failed",
+        description: "There was a problem analyzing the image.",
+        variant: "destructive",
+      });
+    } finally {
+      setAnalyzingFace(false);
+    }
+>>>>>>> upstream/main
   };
 
   const viewRecommendations = () => {
@@ -150,7 +205,11 @@ const FaceShapePage = () => {
                   Your Face Shape: {faceShape}
                 </h2>
                 <p className="mb-6">{faceShapeGuide[faceShape as keyof typeof faceShapeGuide]?.description}</p>
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> upstream/main
                 <div className="mb-6">
                   <h3 className="font-semibold mb-2">Characteristics</h3>
                   <ul className="space-y-1 list-disc pl-5">
@@ -159,7 +218,11 @@ const FaceShapePage = () => {
                     ))}
                   </ul>
                 </div>
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> upstream/main
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <h3 className="font-semibold mb-2">Recommended Frames</h3>
@@ -178,7 +241,11 @@ const FaceShapePage = () => {
                     </ul>
                   </div>
                 </div>
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> upstream/main
                 <div className="mt-6 flex gap-3">
                   <Button onClick={viewRecommendations} className="flex items-center">
                     View Recommended Frames <ArrowRight className="ml-2 h-4 w-4" />
@@ -211,6 +278,7 @@ const FaceShapePage = () => {
                     shape === faceShape ? "ring-2 ring-primary" : ""
                   }`}
                 >
+<<<<<<< HEAD
                   <div className="aspect-square relative">
                     <img
                       src={info.image}
@@ -228,6 +296,12 @@ const FaceShapePage = () => {
                     <p className="text-sm text-muted-foreground line-clamp-2">
                       {info.description}
                     </p>
+=======
+                  <img src={info.image} alt={shape} className="w-full h-48 object-cover" />
+                  <div className="p-4">
+                    <h3 className="font-semibold capitalize">{shape}</h3>
+                    <p className="text-sm mt-2">{info.description}</p>
+>>>>>>> upstream/main
                   </div>
                 </div>
               ))}
@@ -239,6 +313,7 @@ const FaceShapePage = () => {
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="w-full">
               <TabsTrigger value="upload" className="flex-1">
+<<<<<<< HEAD
                 <Upload className="h-4 w-4 mr-2" /> Upload Photo
               </TabsTrigger>
               <TabsTrigger value="camera" className="flex-1">
@@ -248,6 +323,20 @@ const FaceShapePage = () => {
             
             <TabsContent value="upload" className="p-6">
               <div className="text-center">
+=======
+                <Upload className=" mr-2 h-4 w-4" />
+                Upload Photo
+              </TabsTrigger>
+              <TabsTrigger value="camera" className="flex-1">
+                <Camera className=" mr-2 h-4 w-4" />
+                Use Camera
+              </TabsTrigger>
+
+            </TabsList>
+
+            <TabsContent value="upload" className="p-6">
+              <div className="flex flex-col items-center gap-4">
+>>>>>>> upstream/main
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -255,6 +344,7 @@ const FaceShapePage = () => {
                   accept="image/*"
                   className="hidden"
                 />
+<<<<<<< HEAD
                 
                 {filePreview ? (
                   <div className="mb-6">
@@ -270,6 +360,23 @@ const FaceShapePage = () => {
                     </Button>
                   </div>
                 ) : (
+=======
+
+                {filePreview ? (
+                  <div className="mb-6">
+                    <div className="relative w-full aspect-square max-w-md mx-auto mb-4 rounded-lg overflow-hidden">
+                    <img src={filePreview} alt="Uploaded" className="w-full h-full object-cover" />
+                  </div> 
+                    <div className="flex gap-3 items-center">
+                      <Button onClick={resetUpload} >Remove</Button>
+                      <Button onClick={analyzeImage}  disabled={analyzingFace}>
+                        {analyzingFace ? "Analyzing..." : "Analyze"}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  // <Button onClick={handleUploadClick}>Select Photo</Button>
+>>>>>>> upstream/main
                   <div
                     onClick={handleUploadClick}
                     className="border-2 border-dashed border-border rounded-lg p-8 mb-6 cursor-pointer hover:bg-accent transition-colors duration-200"
@@ -285,6 +392,7 @@ const FaceShapePage = () => {
                     </div>
                   </div>
                 )}
+<<<<<<< HEAD
                 
                 {filePreview && (
                   <motion.div 
@@ -385,6 +493,86 @@ const FaceShapePage = () => {
             </ul>
           </div>
         </div>
+=======
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </div>
+            </TabsContent>
+
+          <TabsContent value="camera">
+  <div className="flex flex-col items-center gap-4">
+  
+
+    {/* Camera logic */}
+    {capturedImage ? (
+  <>
+    
+      <img src={capturedImage} alt="Captured" className="max-w-xs mx-auto rounded-md mb-4" />
+      <div className="flex justify-center gap-3">
+        <Button onClick={resetCamera} variant="outline">Retake</Button>
+        <Button onClick={analyzeImage} disabled={analyzingFace}>
+          {analyzingFace ? "Analyzing..." : "Analyze"}
+        </Button>
+      </div>
+    
+  </>
+) : (
+  <div className="border-2 border-dashed border-border rounded-lg p-8 mb-6">
+    <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center">
+        <Camera className="h-12 w-12 text-muted-foreground mb-4" />
+        <h3 className="text-lg font-medium mb-2">Use Your Camera</h3>
+        <p className="text-muted-foreground text-sm max-w-md mb-4">
+          For best results, use a front-facing photo with your face clearly visible and
+          hair pulled back from your face.
+        </p>
+      </div>
+      <video ref={videoRef} autoPlay muted playsInline className="rounded-md max-w-xs mx-auto mb-4" />
+      <canvas ref={canvasRef} className="hidden" />
+      {!isCameraActive ? (
+        <Button onClick={startCamera}>Start Camera</Button>
+      ) : (
+        <Button onClick={captureImage}>Capture</Button>
+      )}
+    </div>
+    <canvas ref={canvasRef} className="hidden" />
+  </div>
+)}
+
+  </div>
+</TabsContent>
+
+          </Tabs>
+                   <Separator />
+          
+          <div className="p-6 bg-accent">
+             <h3 className="font-semibold mb-2">Tips for Best Results</h3>
+             <ul className="space-y-2">
+               <li className="flex items-start">
+                 <Check className="h-5 w-5 mr-2 text-green-600 shrink-0" />
+                 Use a well-lit environment with even lighting on your face
+               </li>
+               <li className="flex items-start">
+                 <Check className="h-5 w-5 mr-2 text-green-600 shrink-0" />
+                 Pull your hair back so your entire face is visible
+               </li>
+               <li className="flex items-start">
+                 <Check className="h-5 w-5 mr-2 text-green-600 shrink-0" />
+                 Remove glasses and face the camera directly
+               </li>
+               <li className="flex items-start">
+                <Check className="h-5 w-5 mr-2 text-green-600 shrink-0" />
+                Maintain a neutral expression (no smiling)
+               </li>
+             </ul>
+           </div>
+         </div>
+>>>>>>> upstream/main
       )}
     </div>
   );

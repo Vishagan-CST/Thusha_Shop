@@ -9,8 +9,17 @@ import DoctorAppointmentsTab from '@/components/dashboard/DoctorAppointmentsTab'
 import DoctorPrescriptionsTab from '@/components/dashboard/DoctorPrescriptionsTab';
 import DoctorProfileTab from '@/components/dashboard/DoctorProfileTab';
 import PrescriptionForm from '@/components/dashboard/PrescriptionForm';
+<<<<<<< HEAD
 
 const API_BASE_URL = 'http://localhost:8000/api/doctors'; // Adjust as needed
+=======
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+
+const API_BASE_URL = 'http://localhost:8000/api/doctors';
+const APPOINTMENTS_API_URL = 'http://localhost:8000/api/appointments/';
+const PRESCRIPTIONS_API_URL = 'http://localhost:8000/api/prescriptions/';
+>>>>>>> upstream/main
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('access_token');
@@ -20,6 +29,7 @@ const getAuthHeaders = () => {
 const DoctorDashboard = () => {
   const { toast } = useToast();
 
+<<<<<<< HEAD
   // ----- Demo States for Non-Profile Tabs -----
   const [appointments, setAppointments] = useState([
     { id: 'APT-001', patientName: 'Michael Brown', date: '2024-07-10', time: '11:00 AM', type: 'Check-up', status: 'scheduled' },
@@ -57,18 +67,45 @@ const DoctorDashboard = () => {
   const [showPrescriptionForm, setShowPrescriptionForm] = useState(false);
   const [newPrescription, setNewPrescription] = useState({
     patientName: '',
+=======
+  // Appointment state
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [appointmentsLoading, setAppointmentsLoading] = useState(false);
+  const [appointmentsError, setAppointmentsError] = useState<string | null>(null);
+  const [confirmedPatients, setConfirmedPatients] = useState<string[]>([]);
+
+  // For selected appointment detail modal
+  const [selectedAppointment, setSelectedAppointment] = useState<any | null>(null);
+  const [showAppointmentDialog, setShowAppointmentDialog] = useState(false);
+
+  // Your existing state
+  const [prescriptions, setPrescriptions] = useState<any[]>([]);
+  const [filteredPrescriptions, setFilteredPrescriptions] = useState<any[]>([]);
+
+  const [showPrescriptionForm, setShowPrescriptionForm] = useState(false);
+  const [newPrescription, setNewPrescription] = useState({
+    patientEmail: '',
+>>>>>>> upstream/main
     details: '',
     rightEye: { sphere: 0, cylinder: 0, axis: 0 },
     leftEye: { sphere: 0, cylinder: 0, axis: 0 },
     pupillaryDistance: 64,
   });
 
+<<<<<<< HEAD
   // ----- Profile API Integration (Don't Modify) -----
+=======
+  const [searchText, setSearchText] = useState('');
+>>>>>>> upstream/main
   const [doctorProfile, setDoctorProfile] = useState<any>(null);
   const [profileForm, setProfileForm] = useState<any>(null);
   const [editingProfile, setEditingProfile] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(false);
 
+<<<<<<< HEAD
+=======
+  // Fetch doctor profile and prescriptions on mount
+>>>>>>> upstream/main
   useEffect(() => {
     const fetchProfile = async () => {
       setLoadingProfile(true);
@@ -89,9 +126,84 @@ const DoctorDashboard = () => {
         setLoadingProfile(false);
       }
     };
+<<<<<<< HEAD
     fetchProfile();
   }, [toast]);
 
+=======
+
+    const fetchPrescriptions = async () => {
+      try {
+        const res = await fetch(PRESCRIPTIONS_API_URL, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders(),
+          },
+        });
+        if (!res.ok) throw new Error('Failed to fetch prescriptions');
+        const data = await res.json();
+        setPrescriptions(data);
+        setFilteredPrescriptions(data);
+      } catch (error) {
+        toast({ title: 'Error', description: (error as Error).message, variant: 'destructive' });
+      }
+    };
+
+    fetchProfile();
+    fetchPrescriptions();
+    fetchAppointments();
+
+    const interval = setInterval(() => {
+    fetchAppointments();
+  }, 300000); 
+
+  return () => clearInterval(interval);
+  }, [toast]);
+
+  // Fetch appointments from API
+  const fetchAppointments = async () => {
+    setAppointmentsLoading(true);
+    setAppointmentsError(null);
+    try {
+      const res = await fetch(APPOINTMENTS_API_URL, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+      });
+      if (!res.ok) throw new Error('Failed to fetch appointments');
+      const data = await res.json();
+      setAppointments(data);
+       
+      const confirmedEmails = data
+          .filter((appt: any) => appt.status === 'confirmed')
+          .map((appt: any) => appt.patient_email);
+        setConfirmedPatients(confirmedEmails);
+
+
+
+    } catch (error) {
+      setAppointmentsError((error as Error).message);
+      toast({ title: 'Error', description: (error as Error).message, variant: 'destructive' });
+    } finally {
+      setAppointmentsLoading(false);
+    }
+  };
+
+  // Filter prescriptions by search
+  useEffect(() => {
+    if (!searchText.trim()) {
+      setFilteredPrescriptions(prescriptions);
+    } else {
+      const filtered = prescriptions.filter(prescription =>
+        prescription.patient_email_display?.toLowerCase().includes(searchText.toLowerCase())
+      );
+      setFilteredPrescriptions(filtered);
+    }
+  }, [searchText, prescriptions]);
+
+  // Profile editing handlers
+>>>>>>> upstream/main
   const onEditProfile = () => setEditingProfile(true);
   const onCancelEdit = () => {
     setEditingProfile(false);
@@ -100,6 +212,7 @@ const DoctorDashboard = () => {
   const onProfileChange = (field: string, value: string) => {
     setProfileForm({ ...profileForm, [field]: value });
   };
+<<<<<<< HEAD
   const onSaveProfile = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/profile/`, {
@@ -111,16 +224,91 @@ const DoctorDashboard = () => {
         body: JSON.stringify(profileForm),
       });
       if (!res.ok) throw new Error('Failed to update profile');
+=======
+
+  const onSaveProfile = async () => {
+    const headers = {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    };
+
+    if (!headers.Authorization) {
+      toast({
+        title: 'Authentication Error',
+        description: 'No access token found. Please log in again.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/profile/`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(profileForm),
+      });
+
+      if (res.status === 401) throw new Error('Unauthorized. Please login again.');
+      if (!res.ok) {
+        const errorData = await res.json();
+        const errorMsg = errorData.detail || 'Failed to update profile.';
+        throw new Error(errorMsg);
+      }
+
+>>>>>>> upstream/main
       const updated = await res.json();
       setDoctorProfile(updated);
       setProfileForm(updated);
       setEditingProfile(false);
+<<<<<<< HEAD
       toast({ title: 'Success', description: 'Profile updated' });
+=======
+
+      const doctorName = updated?.user?.name || updated?.name || 'Doctor';
+
+      setPrescriptions(prev =>
+        prev.map(prescription => ({
+          ...prescription,
+          doctor_name: doctorName,
+        }))
+      );
+      setFilteredPrescriptions(prev =>
+        prev.map(prescription => ({
+          ...prescription,
+          doctor_name: doctorName,
+        }))
+      );
+
+      toast({ title: 'Success', description: 'Profile updated successfully.' });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: (error as Error).message,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  // Prescription handlers (same as your current ones)
+  const fetchPrescriptions = async () => {
+    try {
+      const res = await fetch(PRESCRIPTIONS_API_URL, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+      });
+      if (!res.ok) throw new Error('Failed to fetch prescriptions');
+      const data = await res.json();
+      setPrescriptions(data);
+      setFilteredPrescriptions(data);
+>>>>>>> upstream/main
     } catch (error) {
       toast({ title: 'Error', description: (error as Error).message, variant: 'destructive' });
     }
   };
 
+<<<<<<< HEAD
   // ----- Handlers for Demo Tabs -----
   const handleViewAppointment = (id: string) => {
     toast({ title: 'View Appointment', description: `Viewing appointment ${id}` });
@@ -159,6 +347,107 @@ const DoctorDashboard = () => {
   const handlePupillaryDistanceChange = (value: number) =>
     setNewPrescription({ ...newPrescription, pupillaryDistance: value });
 
+=======
+  const handleSavePrescription = async () => {
+    const payload = {
+      patient_email: newPrescription.patientEmail,
+      right_sphere: newPrescription.rightEye.sphere,
+      right_cylinder: newPrescription.rightEye.cylinder,
+      right_axis: newPrescription.rightEye.axis,
+      left_sphere: newPrescription.leftEye.sphere,
+      left_cylinder: newPrescription.leftEye.cylinder,
+      left_axis: newPrescription.leftEye.axis,
+      pupillary_distance: newPrescription.pupillaryDistance,
+      additional_notes: newPrescription.details,
+    };
+
+    try {
+      const res = await fetch(PRESCRIPTIONS_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        const errorMsg = errorData.detail || JSON.stringify(errorData);
+        throw new Error(errorMsg);
+      }
+
+      const createdRx = await res.json();
+      await fetchPrescriptions();
+
+      setNewPrescription({
+        patientEmail: '',
+        details: '',
+        rightEye: { sphere: 0, cylinder: 0, axis: 0 },
+        leftEye: { sphere: 0, cylinder: 0, axis: 0 },
+        pupillaryDistance: 64,
+      });
+
+      setShowPrescriptionForm(false);
+      toast({ title: 'Prescription Created', description: `For ${createdRx.patient_email_display || createdRx.patient_name}` });
+    } catch (error) {
+      toast({ title: 'Error', description: (error as Error).message, variant: 'destructive' });
+    }
+  };
+
+  const handleCancelPrescription = () => setShowPrescriptionForm(false);
+
+  const handleSelectPatientEmail = (email: string) => {
+  setNewPrescription((prev) => ({ ...prev, patientEmail: email })); 
+  };
+
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setNewPrescription({ ...newPrescription, [e.target.name]: e.target.value });
+
+  const handleEyeValueChange = (eye: 'rightEye' | 'leftEye', field: string, value: number) =>
+    setNewPrescription({ ...newPrescription, [eye]: { ...newPrescription[eye], [field]: value } });
+
+  const handlePupillaryDistanceChange = (value: number) =>
+    setNewPrescription({ ...newPrescription, pupillaryDistance: value });
+
+  // Handle View Details clicked from DoctorAppointmentsTab
+  const handleViewAppointmentDetails = (appointmentId: string) => {
+    const appt = appointments.find(a => a.id === appointmentId);
+    if (appt) {
+      setSelectedAppointment(appt);
+      setShowAppointmentDialog(true);
+    } else {
+      toast({ title: 'Error', description: 'Appointment not found', variant: 'destructive' });
+    }
+  };
+
+  const handleUpdateAppointmentStatus = async (id: string, status: string) => {
+    try {
+      const res = await fetch(`${APPOINTMENTS_API_URL}${id}/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify({ status }),
+      });
+
+      if (!res.ok) throw new Error('Failed to update appointment status');
+
+      setAppointments(prev =>
+        prev.map(appt => (appt.id === id ? { ...appt, status } : appt))
+      );
+
+      toast({ title: 'Success', description: `Appointment marked as ${status}` });
+    } catch (error) {
+      toast({ title: 'Error', description: (error as Error).message, variant: 'destructive' });
+    }
+  }; 
+
+  
+
+>>>>>>> upstream/main
   if (loadingProfile || !doctorProfile) {
     return <div className="p-8 text-center">Loading profile...</div>;
   }
@@ -181,11 +470,19 @@ const DoctorDashboard = () => {
             appointments={appointments}
             prescriptions={prescriptions}
             doctorProfile={doctorProfile}
+<<<<<<< HEAD
             onViewAppointment={handleViewAppointment}
+=======
+            onViewAppointment={handleViewAppointmentDetails}
+            selectedAppointment={selectedAppointment}
+            showAppointmentDialog={showAppointmentDialog}
+            setShowAppointmentDialog={setShowAppointmentDialog}
+>>>>>>> upstream/main
           />
         </TabsContent>
 
         <TabsContent value="appointments">
+<<<<<<< HEAD
           <DoctorAppointmentsTab
             appointments={appointments}
             onViewAppointment={handleViewAppointment}
@@ -197,6 +494,33 @@ const DoctorDashboard = () => {
           <DoctorPrescriptionsTab
             prescriptions={prescriptions}
             onCreatePrescription={handleCreatePrescription}
+=======
+          {appointmentsLoading && <p>Loading appointments...</p>}
+          {appointmentsError && <p className="text-red-500">{appointmentsError}</p>}
+          {!appointmentsLoading && !appointmentsError && (
+            <DoctorAppointmentsTab
+              appointments={appointments}
+              onViewAppointment={handleViewAppointmentDetails}
+              onUpdateAppointmentStatus={handleUpdateAppointmentStatus}
+            />
+          )}
+        </TabsContent>
+
+        <TabsContent value="prescriptions">
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Search by patient email..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <DoctorPrescriptionsTab
+            prescriptions={filteredPrescriptions}
+            onCreatePrescription={() => setShowPrescriptionForm(true)}
+            onRefreshPrescriptions={fetchPrescriptions}
+>>>>>>> upstream/main
           />
         </TabsContent>
 
@@ -227,6 +551,10 @@ const DoctorDashboard = () => {
         </TabsContent>
       </Tabs>
 
+<<<<<<< HEAD
+=======
+      {/* Prescription form modal */}
+>>>>>>> upstream/main
       {showPrescriptionForm && (
         <PrescriptionForm
           newPrescription={newPrescription}
@@ -235,8 +563,16 @@ const DoctorDashboard = () => {
           onSave={handleSavePrescription}
           onCancel={handleCancelPrescription}
           onPupillaryDistanceChange={handlePupillaryDistanceChange}
+<<<<<<< HEAD
         />
       )}
+=======
+          confirmedPatients={confirmedPatients}
+          onSelectPatientEmail={handleSelectPatientEmail}
+        />
+      )}
+
+>>>>>>> upstream/main
     </div>
   );
 };

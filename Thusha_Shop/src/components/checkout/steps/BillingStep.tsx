@@ -4,11 +4,19 @@ import BillingInformation from '../BillingInformation';
 
 interface BillingStepProps {
   billingInfo: {
+<<<<<<< HEAD
     firstName: string;
     lastName: string;
     email: string;
     phone: string;
     address: string;
+=======
+    Name: string;
+    email: string;
+    phone: string;
+    address1: string;
+    address2: string;
+>>>>>>> upstream/main
     city: string;
     state: string;
     zipCode: string;

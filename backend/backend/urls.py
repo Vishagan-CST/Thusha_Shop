@@ -11,17 +11,24 @@ urlpatterns = [
 
     # User roles
     # path('api/users/', include('users.urls')),
+<<<<<<< HEAD
    path('api/doctors/', include('doctors.urls')),
+=======
+     path('api/doctors/', include('doctors.urls')),
+>>>>>>> upstream/main
 #     path('api/manufacturers/', include('manufacturers.urls')),
 #     path('api/delivery/', include('delivery.urls')),
 
 #     # Functional modules
-#     path('api/appointments/', include('appointments.urls')),
-#     path('api/prescriptions/', include('prescriptions.urls')),
-#     path('api/products/', include('products.urls')),
+     path('api/appointments/', include('appointments.urls')),
+     path('api/prescriptions/', include('prescriptions.urls')),
+     path('api/products/', include('products.urls')),
 #     path('api/orders/', include('orders.urls')),
 #     path('api/reviews/', include('reviews.urls')),
-#     path('api/face-shape/', include('face_shape.urls')),
+    path('api/', include('face_shape.urls')),  # fallback or shared
+    path('api/contact/', include('face_shape.urls')),
+    path('api/faceshape/', include('face_shape.urls')),
+
  ]
 
 # For media files (uploaded photos, prescriptions, etc.)

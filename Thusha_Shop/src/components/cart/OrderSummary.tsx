@@ -3,7 +3,10 @@ import React from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+<<<<<<< HEAD
 import { Input } from "@/components/ui/input";
+=======
+>>>>>>> upstream/main
 import { Prescription } from "@/types/user";
 
 interface OrderSummaryProps {
@@ -104,6 +107,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           </div>
         )}
 
+<<<<<<< HEAD
         {/* Promo Code Section */}
         <div className="mt-6">
           <h3 className="font-medium mb-2">Promo Code</h3>
@@ -113,6 +117,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           </div>
         </div>
 
+=======
+        
+>>>>>>> upstream/main
         <div className="mt-6">
           <Button
             className="w-full flex items-center justify-center"

@@ -20,6 +20,7 @@ export const useCheckoutLogic = () => {
   const [deliveryOption, setDeliveryOption] = useState<"home" | "pickup">("home");
   
   const [billingInfo, setBillingInfo] = useState({
+<<<<<<< HEAD
     firstName: user?.name.split(" ")[0] || "",
     lastName: user?.name.split(" ")[1] || "",
     email: user?.email || "",
@@ -29,6 +30,17 @@ export const useCheckoutLogic = () => {
     state: "",
     zipCode: "",
     country: "United States",
+=======
+    Name: user?.name.split(" ")[0] || "",
+    email: user?.email || "",
+    phone: user?.profile?.phone_number || "",
+    address1: user?.profile?.address_line1 || "",
+    address2: user?.profile?.address_line2 || "",
+    city: user?.profile?.city || "",
+    state: user?.profile?.state || "",
+    zipCode: user?.profile?.zip_code || "",
+    country: user?.profile?.country || "",
+>>>>>>> upstream/main
   });
   
   const [sameAsBilling, setSameAsBilling] = useState(true);
@@ -73,7 +85,11 @@ export const useCheckoutLogic = () => {
 
   const nextStep = () => {
     if (currentStep === 1) {
+<<<<<<< HEAD
       if (!billingInfo.firstName || !billingInfo.lastName || !billingInfo.email || !billingInfo.phone || !billingInfo.address || !billingInfo.city || !billingInfo.state || !billingInfo.zipCode) {
+=======
+      if (!billingInfo.Name  || !billingInfo.email || !billingInfo.phone || !billingInfo.address1 || !billingInfo.address2 || !billingInfo.city || !billingInfo.state || !billingInfo.zipCode) {
+>>>>>>> upstream/main
         toast({
           title: "Missing Information",
           description: "Please fill out all required billing fields",
@@ -132,7 +148,11 @@ export const useCheckoutLogic = () => {
         to: billingInfo.email,
         subject: "Order Confirmation",
         orderNumber: randomOrderNumber,
+<<<<<<< HEAD
         customerName: `${billingInfo.firstName} ${billingInfo.lastName}`,
+=======
+        customerName: `${billingInfo.Name} `,
+>>>>>>> upstream/main
         orderTotal: orderTotal,
         deliveryDate: deliveryOption === "pickup" ? "Ready for pickup in 1-2 business days" : "Delivered in 3-5 business days"
       });

@@ -2,10 +2,17 @@
 import React from "react";
 import { useUser } from "@/context/UserContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+<<<<<<< HEAD
 import DashboardStats from "@/components/dashboard/DashboardStats";
 import DoctorAppointments from "@/components/dashboard/DoctorAppointments";
 import QuickActions from "@/components/dashboard/QuickActions";
 import PrescriptionDisplay from "@/components/PrescriptionDisplay";
+=======
+import DashboardStats from "@/components/user/DashboardStats";
+import DoctorAppointments from "@/components/user/DoctorAppointments";
+import QuickActions from "@/components/user/QuickActions";
+import UserPrescriptionView from "@/components/user/UserPrescriptionView";
+>>>>>>> upstream/main
 
 const UserDashboard = () => {
   const { user } = useUser();
@@ -40,8 +47,12 @@ const UserDashboard = () => {
       </div>
 
       {/* Prescription Details Section */}
+<<<<<<< HEAD
       <PrescriptionDisplay 
         prescriptions={user.prescriptions || []} 
+=======
+      <UserPrescriptionView 
+>>>>>>> upstream/main
         title="My Prescriptions"
       />
     </div>

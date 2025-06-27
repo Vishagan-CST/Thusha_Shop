@@ -5,11 +5,39 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { User, GraduationCap } from 'lucide-react';
+<<<<<<< HEAD
 
 interface DoctorProfileTabProps {
   doctorProfile: any;
   editingProfile: boolean;
   profileForm: any;
+=======
+import { Checkbox } from '@/components/ui/checkbox';
+
+interface Availability {
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+  saturday: boolean;
+  sunday: boolean;
+}
+
+interface DoctorProfile {
+  name: string;
+  specialization: string;
+  experience_years: number | string;
+  qualifications: string;
+  availability: Availability | string;
+  biography: string;
+}
+
+interface DoctorProfileTabProps {
+  doctorProfile: DoctorProfile;
+  editingProfile: boolean;
+  profileForm: DoctorProfile;
+>>>>>>> upstream/main
   onEditProfile: () => void;
   onSaveProfile: () => void;
   onProfileChange: (field: string, value: string) => void;
@@ -25,6 +53,60 @@ const DoctorProfileTab = ({
   onProfileChange,
   onCancelEdit
 }: DoctorProfileTabProps) => {
+<<<<<<< HEAD
+=======
+  // Parse availability from string if needed
+  const getAvailabilityObject = (): Availability => {
+    if (typeof profileForm.availability === 'string') {
+      try {
+        return JSON.parse(profileForm.availability) as Availability;
+      } catch {
+        return {
+          monday: false,
+          tuesday: false,
+          wednesday: false,
+          thursday: false,
+          friday: false,
+          saturday: false,
+          sunday: false
+        };
+      }
+    }
+    return profileForm.availability;
+  };
+
+  const currentAvailability = getAvailabilityObject();
+
+  // Helper function to format availability for display
+  const formatAvailability = (availability: Availability | string): string => {
+    if (typeof availability === 'string') {
+      try {
+        const parsed = JSON.parse(availability) as Availability;
+        return Object.entries(parsed)
+          .filter(([_, isAvailable]) => isAvailable)
+          .map(([day]) => day.charAt(0).toUpperCase() + day.slice(1))
+          .join(', ');
+      } catch {
+        return availability;
+      }
+    }
+
+    return Object.entries(availability)
+      .filter(([_, isAvailable]) => isAvailable)
+      .map(([day]) => day.charAt(0).toUpperCase() + day.slice(1))
+      .join(', ');
+  };
+
+  // Handle checkbox changes for availability
+  const handleAvailabilityChange = (day: keyof Availability, checked: boolean) => {
+    const newAvailability = {
+      ...currentAvailability,
+      [day]: checked
+    };
+    onProfileChange('availability', JSON.stringify(newAvailability));
+  };
+
+>>>>>>> upstream/main
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between items-center">
@@ -56,6 +138,7 @@ const DoctorProfileTab = ({
                   onChange={(e) => onProfileChange('specialization', e.target.value)}
                 />
               </div>
+<<<<<<< HEAD
                <div>
                 <Label htmlFor="experience_years">Years of Experience</Label>
                 <Input
@@ -67,6 +150,17 @@ const DoctorProfileTab = ({
   />
 </div>
 
+=======
+              <div>
+                <Label htmlFor="experience_years">Years of Experience</Label>
+                <Input
+                  id="experience_years"
+                  type="number"
+                  value={profileForm.experience_years}
+                  onChange={(e) => onProfileChange('experience_years', e.target.value)}
+                />
+              </div>
+>>>>>>> upstream/main
               <div>
                 <Label htmlFor="qualifications">Qualifications</Label>
                 <Input
@@ -75,6 +169,7 @@ const DoctorProfileTab = ({
                   onChange={(e) => onProfileChange('qualifications', e.target.value)}
                 />
               </div>
+<<<<<<< HEAD
               <div>
                 <Label htmlFor="availability">Availability</Label>
                 <Input
@@ -83,6 +178,26 @@ const DoctorProfileTab = ({
                   onChange={(e) => onProfileChange('availability', e.target.value)}
                   placeholder="e.g. Mon-Fri"
                 />
+=======
+              <div className="md:col-span-2">
+                <Label>Available Days</Label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
+                  {Object.entries(currentAvailability).map(([day, isAvailable]) => (
+                    <div key={day} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={day}
+                        checked={isAvailable}
+                        onCheckedChange={(checked) => 
+                          handleAvailabilityChange(day as keyof Availability, Boolean(checked))
+                        }
+                      />
+                      <Label htmlFor={day} className="capitalize">
+                        {day.charAt(0).toUpperCase() + day.slice(1)}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+>>>>>>> upstream/main
               </div>
             </div>
             
@@ -110,11 +225,19 @@ const DoctorProfileTab = ({
                   Basic Information
                 </h3>
                 <div className="space-y-2">
+<<<<<<< HEAD
                   <p><strong>Name:</strong> {doctorProfile.name}</p>
                   <p><strong>Specialization:</strong> {doctorProfile.specialization}</p>
                   <p><strong>Experience:</strong> {doctorProfile.experience_years}</p>
                   <p><strong>Qualifications:</strong> {doctorProfile.qualifications}</p>
                   <p><strong>Availability:</strong> {doctorProfile.availability}</p>
+=======
+                  <p><strong>Name:</strong> {doctorProfile.name || 'Not specified'}</p>
+                  <p><strong>Specialization:</strong> {doctorProfile.specialization || 'Not specified'}</p>
+                  <p><strong>Experience:</strong> {doctorProfile.experience_years || '0'} years</p>
+                  <p><strong>Qualifications:</strong> {doctorProfile.qualifications || 'Not specified'}</p>
+                  <p><strong>Availability:</strong> {formatAvailability(doctorProfile.availability) || 'Not specified'}</p>
+>>>>>>> upstream/main
                 </div>
               </div>
             </div>
@@ -124,7 +247,13 @@ const DoctorProfileTab = ({
                 <GraduationCap className="h-4 w-4" />
                 Professional Biography
               </h3>
+<<<<<<< HEAD
               <p className="text-muted-foreground">{doctorProfile.biography}</p>
+=======
+              <p className="text-muted-foreground">
+                {doctorProfile.biography || 'No biography provided'}
+              </p>
+>>>>>>> upstream/main
             </div>
           </div>
         )}
@@ -133,4 +262,8 @@ const DoctorProfileTab = ({
   );
 };
 
+<<<<<<< HEAD
 export default DoctorProfileTab;
+=======
+export default DoctorProfileTab;
+>>>>>>> upstream/main

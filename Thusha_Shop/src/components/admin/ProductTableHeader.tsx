@@ -12,8 +12,13 @@ const ProductTableHeader: React.FC<ProductTableHeaderProps> = ({ onAddProduct })
   return (
     <CardHeader className="flex flex-row items-center justify-between">
       <div>
+<<<<<<< HEAD
         <CardTitle>Product Management</CardTitle>
         <CardDescription>Manage your product inventory, categories, and pricing</CardDescription>
+=======
+        <CardTitle>Product List</CardTitle>
+       
+>>>>>>> upstream/main
       </div>
       <Button 
         onClick={onAddProduct}

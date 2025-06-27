@@ -2,6 +2,7 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+<<<<<<< HEAD
 
 interface Product {
   id: number;
@@ -11,6 +12,10 @@ interface Product {
   category: string;
   price: number;
 }
+=======
+import { Product } from '@/types/product';
+
+>>>>>>> upstream/main
 
 interface ProductInventoryProps {
   products: Product[];

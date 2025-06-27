@@ -2,7 +2,11 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "../components/ui/use-toast";
 import { Product } from "../types";
+<<<<<<< HEAD
 
+=======
+import { useUser } from "./UserContext";
+>>>>>>> upstream/main
 type WishlistContextType = {
   wishlistItems: Product[];
   addToWishlist: (product: Product) => void;
@@ -17,6 +21,10 @@ const WishlistContext = createContext<WishlistContextType | undefined>(
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
+<<<<<<< HEAD
+=======
+  const { isAuthenticated } = useUser(); 
+>>>>>>> upstream/main
 
   // Load wishlist from localStorage on initial load
   useEffect(() => {
@@ -35,6 +43,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("wishlist", JSON.stringify(wishlistItems));
   }, [wishlistItems]);
 
+<<<<<<< HEAD
   const addToWishlist = (product: Product) => {
     if (!isInWishlist(product.id)) {
       setWishlistItems((prevItems) => [...prevItems, product]);
@@ -44,6 +53,28 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       });
     }
   };
+=======
+
+
+const addToWishlist = (product: Product) => {
+  if (!isAuthenticated) {
+    toast({
+      title: "Login Required",
+      description: "Please login to add items to your wishlist",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  if (!isInWishlist(product.id)) {
+    setWishlistItems((prevItems) => [...prevItems, product]);
+    toast({
+      title: "Added to wishlist",
+      description: `${product.name} has been added to your wishlist`,
+    });
+  }
+};
+>>>>>>> upstream/main
 
   const removeFromWishlist = (productId: number) => {
     setWishlistItems((prevItems) => {

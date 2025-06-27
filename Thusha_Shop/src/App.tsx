@@ -38,9 +38,16 @@ const App = () => {
   
   return (
     <QueryClientProvider client={queryClient}>
+<<<<<<< HEAD
       <CartProvider>
         <WishlistProvider>
           <UserProvider>
+=======
+        <UserProvider>
+        <CartProvider>
+        <WishlistProvider>
+        
+>>>>>>> upstream/main
             <TooltipProvider>
               <Toaster />
               <Sonner />
@@ -97,9 +104,15 @@ const App = () => {
                 </Routes>
               </BrowserRouter>
             </TooltipProvider>
+<<<<<<< HEAD
           </UserProvider>
         </WishlistProvider>
       </CartProvider>
+=======
+         </WishlistProvider>
+        </CartProvider>
+        </UserProvider>
+>>>>>>> upstream/main
     </QueryClientProvider>
   );
 };

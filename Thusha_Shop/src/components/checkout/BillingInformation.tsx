@@ -4,11 +4,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface BillingInfo {
+<<<<<<< HEAD
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
   address: string;
+=======
+  Name: string;
+  email: string;
+  phone: string;
+  address1: string;
+  address2: string;
+>>>>>>> upstream/main
   city: string;
   state: string;
   zipCode: string;
@@ -32,6 +40,7 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
+<<<<<<< HEAD
           <Label htmlFor="firstName">First Name</Label>
           <Input 
             id="firstName" 
@@ -47,10 +56,21 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
             id="lastName" 
             name="lastName" 
             value={billingInfo.lastName}
+=======
+          <Label htmlFor="firstName">Name</Label>
+          <Input 
+            id="Name" 
+            name="tName" 
+            value={billingInfo.Name}
+>>>>>>> upstream/main
             onChange={onBillingInfoChange}
             required
           />
         </div>
+<<<<<<< HEAD
+=======
+      
+>>>>>>> upstream/main
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -79,16 +99,38 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
       </div>
       
       <div>
+<<<<<<< HEAD
         <Label htmlFor="address">Address</Label>
         <Input 
           id="address" 
           name="address" 
           value={billingInfo.address}
+=======
+        <Label htmlFor="address">Address 1</Label>
+        <Input 
+          id="address" 
+          name="address" 
+          value={billingInfo.address1}
           onChange={onBillingInfoChange}
           required
         />
       </div>
+
+      <div>
+        <Label htmlFor="address">Address 2</Label>
+        <Input 
+          id="address" 
+          name="address" 
+          value={billingInfo.address2}
+>>>>>>> upstream/main
+          onChange={onBillingInfoChange}
+          required
+        />
+      </div>
+<<<<<<< HEAD
       
+=======
+>>>>>>> upstream/main
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         <div className="col-span-2 sm:col-span-1">
           <Label htmlFor="city">City</Label>

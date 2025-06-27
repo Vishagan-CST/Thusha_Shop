@@ -1,4 +1,8 @@
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/main
 import React from "react";
 import {
   Card,
@@ -32,6 +36,7 @@ const Contact = () => {
     },
   });
 
+<<<<<<< HEAD
   const onSubmit = (data: any) => {
     console.log("Form data submitted:", data);
     toast({
@@ -39,10 +44,48 @@ const Contact = () => {
       description: "Thank you for your message. We'll get back to you soon!",
     });
     form.reset();
+=======
+  const onSubmit = async (data: any) => {
+    try {
+      const response = await fetch("http://localhost:8000/api/contact/submit/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Message Sent",
+          description: "Thank you for your message. We'll get back to you soon!",
+        });
+        form.reset();
+      } else {
+        const errorData = await response.json();
+        toast({
+          title: "Error",
+          description: errorData?.detail || "Something went wrong. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+      toast({
+        title: "Network Error",
+        description: "Unable to send message. Please check your connection.",
+        variant: "destructive",
+      });
+    }
+>>>>>>> upstream/main
   };
 
   return (
     <div className="container mx-auto py-8 px-4 md:px-6 max-w-7xl">
+<<<<<<< HEAD
+=======
+      {/* Page Header */}
+>>>>>>> upstream/main
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-black mb-4">Contact Us</h1>
         <p className="text-xl text-gray-700 max-w-3xl mx-auto">
@@ -50,7 +93,13 @@ const Contact = () => {
         </p>
       </div>
 
+<<<<<<< HEAD
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+=======
+      {/* Contact Info Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        {/* Phone */}
+>>>>>>> upstream/main
         <Card className="border border-gold-200 hover:shadow-lg transition-shadow">
           <CardHeader className="text-center pb-2">
             <Phone className="mx-auto h-8 w-8 text-gold-600 mb-2" />
@@ -62,6 +111,10 @@ const Contact = () => {
           </CardContent>
         </Card>
 
+<<<<<<< HEAD
+=======
+        {/* Email */}
+>>>>>>> upstream/main
         <Card className="border border-gold-200 hover:shadow-lg transition-shadow">
           <CardHeader className="text-center pb-2">
             <Mail className="mx-auto h-8 w-8 text-gold-600 mb-2" />
@@ -73,6 +126,10 @@ const Contact = () => {
           </CardContent>
         </Card>
 
+<<<<<<< HEAD
+=======
+        {/* Hours */}
+>>>>>>> upstream/main
         <Card className="border border-gold-200 hover:shadow-lg transition-shadow">
           <CardHeader className="text-center pb-2">
             <Clock className="mx-auto h-8 w-8 text-gold-600 mb-2" />
@@ -85,7 +142,13 @@ const Contact = () => {
         </Card>
       </div>
 
+<<<<<<< HEAD
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+=======
+      {/* Form & Map Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        {/* Contact Form */}
+>>>>>>> upstream/main
         <div>
           <h2 className="text-2xl font-bold mb-6 text-black">Send Us A Message</h2>
           <Card className="border border-gold-200">
@@ -106,7 +169,10 @@ const Contact = () => {
                         </FormItem>
                       )}
                     />
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/main
                     <FormField
                       control={form.control}
                       name="email"
@@ -114,7 +180,11 @@ const Contact = () => {
                         <FormItem>
                           <FormLabel>Email Address</FormLabel>
                           <FormControl>
+<<<<<<< HEAD
                             <Input placeholder="john@example.com" type="email" {...field} />
+=======
+                            <Input type="email" placeholder="john@example.com" {...field} />
+>>>>>>> upstream/main
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -136,7 +206,10 @@ const Contact = () => {
                         </FormItem>
                       )}
                     />
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/main
                     <FormField
                       control={form.control}
                       name="subject"
@@ -159,10 +232,17 @@ const Contact = () => {
                       <FormItem>
                         <FormLabel>Message</FormLabel>
                         <FormControl>
+<<<<<<< HEAD
                           <Textarea 
                             placeholder="Please provide details about your inquiry..." 
                             className="min-h-32" 
                             {...field} 
+=======
+                          <Textarea
+                            placeholder="Please provide details about your inquiry..."
+                            className="min-h-32"
+                            {...field}
+>>>>>>> upstream/main
                           />
                         </FormControl>
                         <FormMessage />
@@ -170,7 +250,11 @@ const Contact = () => {
                     )}
                   />
 
+<<<<<<< HEAD
                   <Button type="submit" className="bg-yellow-500 hover:bg-gold-700 text-black">
+=======
+                  <Button type="submit" className="bg-yellow-500 hover:bg-yellow-600 text-black">
+>>>>>>> upstream/main
                     Send Message
                   </Button>
                 </form>
@@ -179,6 +263,10 @@ const Contact = () => {
           </Card>
         </div>
 
+<<<<<<< HEAD
+=======
+        {/* Location Card */}
+>>>>>>> upstream/main
         <div>
           <h2 className="text-2xl font-bold mb-6 text-black">Visit Our Locations</h2>
           <div className="space-y-6">
@@ -196,11 +284,15 @@ const Contact = () => {
                 <p className="text-gray-700">Phone: (123) 456-7890</p>
               </CardContent>
             </Card>
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/main
           </div>
         </div>
       </div>
 
+<<<<<<< HEAD
       <div className="mb-12">
         <h2 className="text-2xl font-bold mb-6 text-black text-center">Find Us On Map</h2>
         <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-lg">
@@ -210,6 +302,19 @@ const Contact = () => {
             height="450" 
             style={{ border: 0 }} 
             loading="lazy" 
+=======
+      {/* Map Embed */}
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold mb-6 text-black text-center">Find Us On Map</h2>
+        <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-lg">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63152.321187866!2d79.99542445!3d9.6682678!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3afe53fd7be66aa5%3A0xc7da0d9203baf512!2sJaffna%2C%20Sri%20Lanka!5e0!3m2!1sen!2sus!4v1651234567890!5m2!1sen!2sus"
+            width="100%"
+            height="450"
+            style={{ border: 0 }}
+            loading="lazy"
+            allowFullScreen
+>>>>>>> upstream/main
             title="Thusha Opticals Location Map - Jaffna, Sri Lanka"
           ></iframe>
         </div>

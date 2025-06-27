@@ -6,6 +6,10 @@ import RecentOrders from "./RecentOrders";
 import ProductInventory from "./ProductInventory";
 import UpcomingAppointments from "./UpcomingAppointments";
 import { DollarSign, BarChart, Users, Package } from "lucide-react";
+<<<<<<< HEAD
+=======
+import { Product } from "@/types/product";
+>>>>>>> upstream/main
 
 interface DashboardStats {
   totalSales: number;
@@ -25,6 +29,7 @@ interface Order {
   items: number;
 }
 
+<<<<<<< HEAD
 interface Product {
   id: number;
   name: string;
@@ -33,6 +38,8 @@ interface Product {
   category: string;
   price: number;
 }
+=======
+>>>>>>> upstream/main
 
 interface Appointment {
   id: string;

@@ -37,6 +37,7 @@ const LoginForm = ({ onToggleAuthMode }: LoginFormProps) => {
   setIsSubmitting(true);
 
   try {
+<<<<<<< HEAD
     await login(formData.email, formData.password);
     
     // Now check the user from context instead of the login return value
@@ -66,6 +67,36 @@ const LoginForm = ({ onToggleAuthMode }: LoginFormProps) => {
         navigate("/user-dashboard");
     }
 
+=======
+   const loggedInUser = await login(formData.email, formData.password);
+    
+    // Now check the user from context instead of the login return value
+    if (!loggedInUser || !loggedInUser.role) {
+  toast({
+    title: "Login Error",
+    description: "User role not found",
+    variant: "destructive",
+  });
+  return;
+}
+
+switch (loggedInUser.role) {
+  case "admin":
+    navigate("/admin-dashboard");
+    break;
+  case "doctor":
+    navigate("/doctor-dashboard");
+    break;
+  case "manufacturer":
+    navigate("/manufacturer-dashboard");
+    break;
+  case "delivery":
+    navigate("/delivery-dashboard");
+    break;
+  default:
+    navigate("/account");
+}
+>>>>>>> upstream/main
   } catch (error) {
     toast({
       title: "Login Error",
@@ -107,6 +138,10 @@ const LoginForm = ({ onToggleAuthMode }: LoginFormProps) => {
               id="resetEmail" 
               name="resetEmail" 
               type="email" 
+<<<<<<< HEAD
+=======
+              autoComplete="email"
+>>>>>>> upstream/main
               placeholder="your@email.com" 
               value={resetEmail} 
               onChange={(e) => setResetEmail(e.target.value)}
@@ -148,6 +183,10 @@ const LoginForm = ({ onToggleAuthMode }: LoginFormProps) => {
               id="email" 
               name="email" 
               type="email" 
+<<<<<<< HEAD
+=======
+               autoComplete="username"
+>>>>>>> upstream/main
               placeholder="your@email.com" 
               value={formData.email} 
               onChange={handleChange} 
@@ -164,6 +203,10 @@ const LoginForm = ({ onToggleAuthMode }: LoginFormProps) => {
             <Input 
               id="password" 
               name="password" 
+<<<<<<< HEAD
+=======
+              autoComplete="current-password" 
+>>>>>>> upstream/main
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password" 
               value={formData.password} 

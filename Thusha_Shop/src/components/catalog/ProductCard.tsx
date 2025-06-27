@@ -17,6 +17,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
+<<<<<<< HEAD
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     addToCart(product);
@@ -30,6 +31,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       addToWishlist(product);
     }
   };
+=======
+ const handleAddToCart = (e: React.MouseEvent) => {
+  e.preventDefault();
+  e.stopPropagation(); // 
+  addToCart(product);
+};
+
+const handleWishlistToggle = (e: React.MouseEvent) => {
+  e.preventDefault();
+  e.stopPropagation(); // 
+  if (isInWishlist(product.id)) {
+    removeFromWishlist(product.id);
+  } else {
+    addToWishlist(product);
+  }
+};
+
+>>>>>>> upstream/main
 
   return (
     <Link to={`/product/${product.id}`}>

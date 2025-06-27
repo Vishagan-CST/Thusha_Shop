@@ -13,6 +13,7 @@ export const mockOrders = [
   { id: "ORD-008", customer: "Jennifer Lewis", amount: 129.99, status: "shipped" as OrderStatus, date: "2025-04-07", items: 2, updatedAt: "2025-04-08T09:45:00Z", updatedBy: "Admin" },
 ];
 
+<<<<<<< HEAD
 // Mock data for products
 export const mockProducts = [
   { id: 1, name: "Ray-Ban Classic", stock: 24, sold: 156, category: "Sunglasses", price: 149.99 },
@@ -24,6 +25,9 @@ export const mockProducts = [
   { id: 7, name: "Dolce & Gabbana Round", stock: 7, sold: 36, category: "Prescription", price: 259.99 },
   { id: 8, name: "Persol Classic", stock: 14, sold: 68, category: "Sunglasses", price: 189.99 },
 ];
+=======
+
+>>>>>>> upstream/main
 
 // Mock data for appointments
 export const mockAppointments = [

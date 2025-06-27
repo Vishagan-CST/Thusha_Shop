@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/main
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Product } from "@/types";
@@ -18,7 +21,11 @@ export interface CatalogFilters {
 export const useCatalogFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useUser();
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> upstream/main
   const [filters, setFilters] = useState<CatalogFilters>({
     search: searchParams.get("search") || "",
     faceShape: [],
@@ -33,10 +40,17 @@ export const useCatalogFilters = () => {
 
   // Initialize face shape filter if user has a known face shape
   useEffect(() => {
+<<<<<<< HEAD
     if (user && user.preferences.faceShape !== "unknown") {
       setFilters(prev => ({
         ...prev,
         faceShape: [user.preferences.faceShape]
+=======
+    if (user?.preferences?.faceShape && user.preferences.faceShape !== "unknown") {
+      setFilters(prev => ({
+        ...prev,
+        faceShape: [user.preferences.faceShape],
+>>>>>>> upstream/main
       }));
     }
   }, [user]);
@@ -104,7 +118,13 @@ export const useCatalogFilters = () => {
     // Apply vision problem filter
     if (filters.visionProblem.length > 0) {
       result = result.filter(product =>
+<<<<<<< HEAD
         filters.visionProblem.some(problem => product.recommendedVisionProblems.includes(problem))
+=======
+        filters.visionProblem.some(problem =>
+          product.recommendedVisionProblems.includes(problem)
+        )
+>>>>>>> upstream/main
       );
     }
 
@@ -112,6 +132,7 @@ export const useCatalogFilters = () => {
   }, [filters]);
 
   const handleFilterChange = (filterType: string, value: any) => {
+<<<<<<< HEAD
     setFilters(prev => {
       if (filterType === 'priceRange') {
         return { ...prev, priceRange: value };
@@ -129,6 +150,21 @@ export const useCatalogFilters = () => {
       return { ...prev, [filterType]: newValues };
     });
   };
+=======
+  setFilters(prev => {
+    if (filterType === "priceRange") {
+      return { ...prev, priceRange: value };
+    }
+
+    if (value === null) {
+      return { ...prev, [filterType]: [] }; // Clear the filter group
+    }
+
+    return { ...prev, [filterType]: [value] }; // Exclusive selection
+  });
+};
+
+>>>>>>> upstream/main
 
   const clearFilters = () => {
     setFilters({
@@ -143,6 +179,7 @@ export const useCatalogFilters = () => {
     setSearchParams({});
   };
 
+<<<<<<< HEAD
   const hasActiveFilters = filters.faceShape.length > 0 || 
                           filters.frameType.length > 0 || 
                           filters.frameMaterial.length > 0 ||
@@ -150,6 +187,16 @@ export const useCatalogFilters = () => {
                           filters.category.length > 0 ||
                           filters.priceRange[0] > 0 ||
                           filters.priceRange[1] < 200;
+=======
+  const hasActiveFilters =
+    filters.faceShape.length > 0 ||
+    filters.frameType.length > 0 ||
+    filters.frameMaterial.length > 0 ||
+    filters.visionProblem.length > 0 ||
+    filters.category.length > 0 ||
+    filters.priceRange[0] > 0 ||
+    filters.priceRange[1] < 200;
+>>>>>>> upstream/main
 
   return {
     filters,
@@ -157,6 +204,10 @@ export const useCatalogFilters = () => {
     handleFilterChange,
     clearFilters,
     hasActiveFilters,
+<<<<<<< HEAD
     setSearchParams
+=======
+    setSearchParams,
+>>>>>>> upstream/main
   };
 };

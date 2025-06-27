@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/main
 import React from 'react';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -33,7 +36,17 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
   const categories = ["eyeglasses", "sunglasses", "computer-glasses", "reading-glasses", "safety-glasses", "accessories"];
 
   const toggleFilter = (filterType: string, value: string) => {
+<<<<<<< HEAD
     onFilterChange(filterType, value);
+=======
+    const isSelected = filters[filterType as keyof typeof filters].includes(value);
+
+    if (isSelected) {
+      onFilterChange(filterType, null); // uncheck
+    } else {
+      onFilterChange(filterType, value); // exclusive select
+    }
+>>>>>>> upstream/main
   };
 
   return (

@@ -1,4 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+<<<<<<< HEAD
+=======
+import axios from 'axios';
+>>>>>>> upstream/main
 import { useToast } from "@/hooks/use-toast";
 
 // Types
@@ -22,6 +26,10 @@ import { authClient, apiClient } from '@/lib/api-clients';
 
 
 // Add to apiClient interceptors
+<<<<<<< HEAD
+=======
+// In your api-clients.ts
+>>>>>>> upstream/main
 apiClient.interceptors.response.use(
   response => response,
   async (error) => {
@@ -32,10 +40,16 @@ apiClient.interceptors.response.use(
       
       try {
         const refreshToken = localStorage.getItem('refresh_token');
+<<<<<<< HEAD
+=======
+        if (!refreshToken) throw new Error('No refresh token');
+        
+>>>>>>> upstream/main
         const response = await authClient.post('/api/core/token/refresh/', {
           refresh: refreshToken
         });
         
+<<<<<<< HEAD
         localStorage.setItem('access_token', response.data.access);
         apiClient.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
         return apiClient(originalRequest);
@@ -44,6 +58,20 @@ apiClient.interceptors.response.use(
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         window.location.href = '/account?login=true';
+=======
+        const newAccessToken = response.data.access;
+        localStorage.setItem('access_token', newAccessToken);
+        apiClient.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        console.error("Refresh token failed:", refreshError);
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+
+>>>>>>> upstream/main
         return Promise.reject(refreshError);
       }
     }
@@ -59,6 +87,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
 
   // Load user from localStorage on mount
+<<<<<<< HEAD
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -76,6 +105,45 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       setIsAuthenticated(false);
     }
   }, []);
+=======
+ useEffect(() => {
+  
+  const initializeAuth = async () => {
+    const accessToken = localStorage.getItem('access_token');
+    const savedUser = localStorage.getItem('user');
+
+    if (accessToken && savedUser) {
+      try {
+        // Verify token is still valid by making a lightweight API call
+        await authClient.get('/api/core/verify-token/');
+        
+        // Set axios default headers
+        apiClient.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+        
+        // Parse and set user data
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+        setIsAuthenticated(true);
+        
+        // Refresh user data in background
+        fetchProfile().catch(() => {
+          console.warn("Background profile refresh failed");
+        });
+      } catch (error) {
+        // Token verification failed - clear invalid auth data
+        console.error("Token verification failed:", error);
+        performCleanup(); // silent cleanup
+      }
+    } else {
+      // No valid auth data found
+      setUser(defaultUser);
+      setIsAuthenticated(false);
+    }
+  };
+
+  initializeAuth();
+}, []);
+>>>>>>> upstream/main
 
   // Save user to localStorage when it changes
   useEffect(() => {
@@ -106,6 +174,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Login function
+<<<<<<< HEAD
   const login = async (email: string, password: string): Promise<User> => {
     try {
       const response = await authClient.post("/api/core/login/", {
@@ -123,6 +192,26 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
       await fetchProfile(); // Load full profile after login
 
+=======
+
+const login = async (email: string, password: string): Promise<User> => {
+  try {
+    const response = await authClient.post("/api/core/login/", { email, password });
+    const { access, refresh, user } = response.data;
+
+    // (Optional) Use httpOnly cookies instead of localStorage
+    localStorage.setItem('access_token', access);
+    localStorage.setItem('refresh_token', refresh);
+    localStorage.setItem('user', JSON.stringify(user));
+    // Set default auth header for future requests
+    authClient.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+
+    setUser(user);
+    setIsAuthenticated(true);
+
+  
+  
+>>>>>>> upstream/main
       toast({
         title: "Login Successful",
         description: `Welcome back, ${user.name}!`,
@@ -146,6 +235,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   // Logout function
 const logout = async (showToast = true) => {
+<<<<<<< HEAD
   const refreshToken = localStorage.getItem('refresh_token');
   
   try {
@@ -156,6 +246,17 @@ const logout = async (showToast = true) => {
       }, {
         timeout: 5000 // Add timeout to prevent hanging
       });
+=======
+  const refreshToken = localStorage.getItem("refresh_token");
+
+  try {
+    if (refreshToken) {
+      await authClient.post(
+        "/api/core/logout/",
+        { refresh: refreshToken },
+        { timeout: 5000 }
+      );
+>>>>>>> upstream/main
     }
 
     if (showToast) {
@@ -167,7 +268,11 @@ const logout = async (showToast = true) => {
 
   } catch (error: any) {
     console.error("Logout API error:", error);
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/main
     if (showToast) {
       toast({
         title: "Session Ended",
@@ -175,13 +280,23 @@ const logout = async (showToast = true) => {
         variant: "default",
       });
     }
+<<<<<<< HEAD
     
   } finally {
     await performCleanup();
+=======
+
+  } finally {
+    await performCleanup(); // no toast inside this
+    setTimeout(() => {
+      window.location.assign("/"); // give enough time for toast to show
+    }, 1500); // 1.5 seconds is usually safe
+>>>>>>> upstream/main
   }
 };
 
 const performCleanup = async () => {
+<<<<<<< HEAD
   // Clear all authentication data
   localStorage.removeItem('access_token');
   localStorage.removeItem('refresh_token');
@@ -199,6 +314,21 @@ const performCleanup = async () => {
   // Redirect with full page reload to ensure complete cleanup
   window.location.assign('/account?login=true'); // Use assign() instead of href
 };
+=======
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("user");
+  sessionStorage.clear();
+
+  setUser(null);
+  setIsAuthenticated(false);
+
+  if (apiClient.interceptors?.request?.clear) {
+    apiClient.interceptors.request.clear();
+  }
+};
+
+>>>>>>> upstream/main
   // Register function
   const register = async (name: string, email: string, password: string, role: UserRole): Promise<void> => {
     const validation = validateForm(registerSchema, {
@@ -312,7 +442,11 @@ const createInitialProfile = async () => {
     }
   };
 
+<<<<<<< HEAD
   // Fetch Profile Data
+=======
+   // Fetch Profile Data
+>>>>>>> upstream/main
   const fetchProfile = async () => {
     try {
       const response = await apiClient.get("/api/core/profile/");
@@ -321,6 +455,10 @@ const createInitialProfile = async () => {
       setUser(prev => ({
         ...prev,
         name: profileData.name || prev?.name,
+<<<<<<< HEAD
+=======
+        created_at: profileData.created_at ,
+>>>>>>> upstream/main
         profile: {
           ...prev?.profile,
           phone_number: profileData.phone_number,
@@ -473,6 +611,9 @@ export function useUser() {
   return context;
 }
 
+<<<<<<< HEAD
 function logout() {
   throw new Error("Function not implemented.");
 }
+=======
+>>>>>>> upstream/main

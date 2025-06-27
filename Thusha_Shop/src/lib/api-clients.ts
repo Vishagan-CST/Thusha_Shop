@@ -18,10 +18,20 @@ export const apiClient = axios.create({
 });
 
 // Add token interceptor to include bearer token if available
+<<<<<<< HEAD
 apiClient.interceptors.request.use((config) => {
+=======
+// api-clients.ts
+apiClient.interceptors.request.use(config => {
+>>>>>>> upstream/main
   const token = localStorage.getItem('access_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
+<<<<<<< HEAD
 });
+=======
+});
+
+>>>>>>> upstream/main

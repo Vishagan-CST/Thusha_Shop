@@ -5,7 +5,11 @@ import { Product } from "../types";
 import { CartItem } from "../types/cart";
 import { calculateCartTotal, calculateLensTotal, calculateItemCount } from "../utils/cartUtils";
 import { cartReducer, CartState } from "./cartReducer";
+<<<<<<< HEAD
 
+=======
+import { useUser } from "./UserContext";
+>>>>>>> upstream/main
 type CartContextType = {
   cartItems: CartItem[];
   addToCart: (product: Product, quantity?: number) => void;
@@ -29,7 +33,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   
   const [state, dispatch] = useReducer(cartReducer, initialState);
   const { toast } = useToast();
+<<<<<<< HEAD
 
+=======
+  const { isAuthenticated } = useUser(); 
+>>>>>>> upstream/main
   // Load cart from localStorage on initial load
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
@@ -60,6 +68,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("cart", JSON.stringify(state.cartItems));
   }, [state.cartItems]);
 
+<<<<<<< HEAD
   const addToCart = (product: Product, quantity = 1) => {
     dispatch({ type: 'ADD_ITEM', product, quantity });
     
@@ -79,6 +88,36 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       });
     }
   };
+=======
+ const addToCart = (product: Product, quantity = 1) => {
+  if (!isAuthenticated) {
+    toast({
+      title: "Login Required",
+      description: "Please login to add items to your cart",
+      variant: "destructive",
+    });
+    return;
+  }
+  
+  dispatch({ type: 'ADD_ITEM', product, quantity });
+  
+  const existingItem = state.cartItems.find(
+    (item) => item.product.id === product.id
+  );
+  
+  if (existingItem) {
+    toast({
+      title: "Product updated in cart",
+      description: `${product.name} quantity updated to ${existingItem.quantity + quantity}`,
+    });
+  } else {
+    toast({
+      title: "Product added to cart",
+      description: `${product.name} added to your cart`,
+    });
+  }
+};
+>>>>>>> upstream/main
 
   const removeFromCart = (productId: number) => {
     const itemToRemove = state.cartItems.find(

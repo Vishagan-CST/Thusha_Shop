@@ -3,4 +3,8 @@ from .views import DoctorProfileView
 
 urlpatterns = [
     path('profile/', DoctorProfileView.as_view(), name='doctor-profile'),
+<<<<<<< HEAD
 ]
+=======
+]
+>>>>>>> upstream/main

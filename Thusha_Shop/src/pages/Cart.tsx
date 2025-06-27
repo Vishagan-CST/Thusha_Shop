@@ -5,8 +5,11 @@ import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import PrescriptionChecker from "@/components/PrescriptionChecker";
+<<<<<<< HEAD
 import PrescriptionVerifier from "@/components/checkout/PrescriptionVerifier";
 import DeliveryOptions from "@/components/checkout/DeliveryOptions";
+=======
+>>>>>>> upstream/main
 import CartItemList from "@/components/cart/CartItemList";
 import OrderSummary from "@/components/cart/OrderSummary";
 import EmptyCart from "@/components/cart/EmptyCart";
@@ -18,8 +21,11 @@ const Cart = () => {
     isProcessing,
     showPrescriptionChecker,
     verifiedPrescription,
+<<<<<<< HEAD
     prescriptionDialogOpen,
     deliveryOption,
+=======
+>>>>>>> upstream/main
     cartTotal,
     lensTotal,
     shippingCost,
@@ -32,8 +38,11 @@ const Cart = () => {
     handleCheckout,
     handleVerifyPrescription,
     handlePrescriptionVerified,
+<<<<<<< HEAD
     handlePrescriptionConfirmed,
     setDeliveryOption,
+=======
+>>>>>>> upstream/main
     setShowPrescriptionChecker,
     setPrescriptionDialogOpen,
   } = useCartLogic();
@@ -56,12 +65,15 @@ const Cart = () => {
               onClearCart={handleClearCart}
             />
 
+<<<<<<< HEAD
             <DeliveryOptions
               selectedOption={deliveryOption}
               onOptionChange={setDeliveryOption}
               shippingCost={shippingCost}
             />
 
+=======
+>>>>>>> upstream/main
             <div className="mt-6">
               <Button asChild variant="outline" className="flex items-center">
                 <Link to="/catalog">
@@ -98,6 +110,7 @@ const Cart = () => {
         </DialogContent>
       </Dialog>
 
+<<<<<<< HEAD
       {verifiedPrescription && (
         <PrescriptionVerifier
           prescription={verifiedPrescription}
@@ -106,6 +119,9 @@ const Cart = () => {
           onCancel={() => setPrescriptionDialogOpen(false)}
         />
       )}
+=======
+  
+>>>>>>> upstream/main
     </div>
   );
 };

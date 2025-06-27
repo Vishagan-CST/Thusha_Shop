@@ -4,7 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useUser } from "@/context/UserContext";
 import LoginForm from "@/components/account/LoginForm";
 import RegisterForm from "@/components/account/RegisterForm";
+<<<<<<< HEAD
 import UserProfile from "@/components/account/UserProfile";
+=======
+import UserProfile from "@/components/user/UserProfile";
+>>>>>>> upstream/main
 import { Glasses, Eye } from "lucide-react";
 
 const Account = () => {
